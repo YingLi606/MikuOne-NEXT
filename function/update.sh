@@ -73,7 +73,7 @@ RESPONSE=$(curl --connect-timeout 10 -s $REMOTE_URL)
 
 # 检查curl命令是否成功
 if [ $? -ne 0 ]; then
-	echo -e "${WORRY} 无法获取版本信息，请检查网络连接！"
+	echo -e "${WORRY} ❌ 无法获取版本信息，请检查你的网络环境"
 fi
 
 # 使用jq解析JSON信息
@@ -107,7 +107,7 @@ if [ "$(printf '%s\n' "$REMOTE_VERSION" "$LOCAL_VERSION" | sort -V | tail -n1)" 
 		git clone --depth 1 ${git}$GIT_CLONE $TEMP_DIR
 	fi
 	if [ $? -ne 0 ]; then
-		echo -e "${ERROR}更新失败，无法克隆仓库！"
+		echo -e "${ERROR}❌ 更新失败，无法克隆仓库！"
 		log 拉取失败
 		rm -rf $TEMP_DIR
 		exit 1
@@ -130,10 +130,13 @@ if [ "$(printf '%s\n' "$REMOTE_VERSION" "$LOCAL_VERSION" | sort -V | tail -n1)" 
 
 	log 清理临时目录
 	rm -rf $TEMP_DIR
+	if [ "${qqBot}" != "" ]; then
+		Modify_the_variable qqBot ${qqBot} ${HOME}/MikuOne-NEXT/config/config.sh
+	fi
 	chmod 777 ${HOME}/MikuOne-NEXT/mikunext.sh
 	echo "更新完成！当前版本: $REMOTE_VERSION"
 	log 更新成功
 else
-	echo "本地版本是最新版本，无需更新。"
+	echo "✅ 当前是最新版本，无需更新！"
 	log 已是最新版本
 fi

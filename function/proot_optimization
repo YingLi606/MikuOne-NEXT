@@ -134,5 +134,7 @@ rm -rf $0
 dpkg-reconfigure locales
 echo -e "${GREEN}正在安装MikuOne脚本${RES}"
 git clone https://dl.gancmcs.top/https://github.com/YingLi606/MikuOne.git
+echo -e "${GREEN}正在尝试启动MikuOne（启动后可随时退出）...${RES}"
 sleep 2
+bash ~/MikuOne/mikuone.sh
 exit
