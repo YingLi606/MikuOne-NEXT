@@ -29,7 +29,6 @@ open_debian_os_list() {
 		;;
 	esac
 }
-
 open_ubuntu_os_list() {
 	ubuntu_os_list=$(
 		whiptail --title "选择功能" --menu "选择要安装的Ubuntu系统" 15 60 6 \
@@ -39,7 +38,6 @@ open_ubuntu_os_list() {
 			"0" "退出" 3>&1 1>&2 2>&3
 	)
 	case ${ubuntu_os_list} in
-
 	1)
 		os_name=Jammy_Ubuntu_22.04
 		Download_proot_NAME=$(curl -s "${Proot_os_download_source}/ubuntu/jammy/${archurl}/default/" | grep -oP '<a href="[^"]*">\K[^<]*' | sed -n '2s|/$||p')
@@ -60,7 +58,6 @@ open_ubuntu_os_list() {
 		;;
 	esac
 }
-
 open_rockylinux_os_list() {
 	rockylinux_os_list=$(
 		whiptail --title "选择功能" --menu "请选择需要安装的Rocky系统" 15 60 6 \
@@ -84,7 +81,6 @@ open_rockylinux_os_list() {
 		;;
 	esac
 }
-
 open_centos_os_list() {
 	centos_os_list=$(
 		whiptail --title "选择功能" --menu "请选择需要安装的CentOS系统" 15 60 6 \
@@ -102,7 +98,6 @@ open_centos_os_list() {
 		;;
 	esac
 }
-
 install_proot() {
 	case "$(uname -m)" in
 	aarch64)
@@ -154,12 +149,11 @@ install_proot() {
 	log "os_name: ${os_name}"
 	log "Download_proot_NAME: ${Download_proot_NAME}"
 	log "Download_proot_url: ${Download_proot_url}"
-
 	wget_proot_url(){
 		while [ $counter -lt $Maximum_number_of_attempts ]; do
 			log "最大循环Maximum_number_of_attempts: $Maximum_number_of_attempts"
 			log "当前循环counter= $counter"
-			if aria2c -q --show-console-readout=true --file-allocation=none -o "$download_file"; then
+			if aria2c -q -s 16 -x 16 --file-allocation=none -o "$download_file" "$Download_proot_url"; then
 				echo -e "${INFO}文件存储在${RED}$download_file${RES}"
 				log "下载成功：$download_file"
 				break
@@ -175,19 +169,16 @@ install_proot() {
 					exit 1
 				fi
 			fi
-
 			((counter++))
 		done
 	}
-
 	download_file="${HOME}/MikuOne-NEXT/download/${os_name}.tar.xz"
-	# 检查文件是否存在并且文件大小是否小于40MB
 	if [ -f "$download_file" ] && [ $(du -b "$download_file" | cut -f1) -lt 41943040 ]; then
 		echo -e "${WORRY}${RED}${download_file}${RES}可能已经损坏"
 		log "\"${HOME}/MikuOne-NEXT/download/${os_name}.tar.xz\"文件损坏，重新下载"
 		log "下载url:\"${Download_proot_url}\" 保存到 \"$download_file\""
 		counter=0
-		Maximum_number_of_attempts=2  # 定义最大重试次数
+		Maximum_number_of_attempts=2
 		wget_proot_url
 	elif [ -f "$download_file" ]; then
 		log "\"${HOME}/MikuOne-NEXT/download/${os_name}.tar.xz\"存在且大于40MBB"
@@ -195,13 +186,10 @@ install_proot() {
 		log "\"${HOME}/MikuOne-NEXT/download/${os_name}.tar.xz\"不存在"
 		log "下载url:\"${Download_proot_url}\" 保存到 \"$download_file\""
 		counter=0
-		Maximum_number_of_attempts=2  # 
+		Maximum_number_of_attempts=2
 		wget_proot_url
 	fi
-
-	# 提示清理空间
 	echo -e "${INFO}您可以使用${RED}rm -rfv $download_file${RES}来节省存储空间"
-
 	unset LD_PRELOAD
 	mkdir -p ${HOME}/.termux/MikuOne-NEXT/proot/${os_name}
 	log "解压\"${HOME}/MikuOne-NEXT/download/${os_name}.tar.xz\""
@@ -254,7 +242,6 @@ install_proot() {
 		/bin/bash 优化.sh
 	log "优化脚本执行成功"
 	log "退出容器"
-
 }
 start_proot() {
 	list_dir ${HOME}/.termux/MikuOne-NEXT/proot
@@ -368,17 +355,13 @@ rm_proot() {
 		num1=$((RANDOM % 100))
 		num2=$((RANDOM % 100))
 		log "num1=$num1 num2=$num2"
-		# 读取用户输入
 		read -e -p "${num1}+${num2}=?" user_sum
 		log "user_sum=$user_sum"
-		# 计算正确的和
 		correct_sum=$(($num1 + $num2))
-		# 检查用户输入是否正确
 		if [ $user_sum -eq $correct_sum ]; then
 			echo -e "验证完成！您已证明您是人类，继续操作"
 			chmod 777 -R "${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/"
 			rm -rfv "${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/"
-			# 在这里添加你想要执行的命令
 		else
 			echo -e "错误！你输入的和不正确。删除程序将不执行。"
 		fi
