@@ -138,9 +138,9 @@ validity_auto_upgrade() {
 	fi
 }
 validity_dir() {
-	mkdir -p "${HOME}/MikuOne-NEXT/{download,config}"
-	mkdir -p "${HOME}/.back"
-	mkdir -p "${HOME}/.TEMP"
+	mkdir -p ${HOME}/MikuOne-NEXT/{download,config}
+	mkdir -p ${HOME}/.back
+	mkdir -p ${HOME}/.TEMP
 }
 validity() {
 	validity_dir
