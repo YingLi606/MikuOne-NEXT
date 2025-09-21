@@ -159,7 +159,7 @@ install_proot() {
 		while [ $counter -lt $Maximum_number_of_attempts ]; do
 			log "最大循环Maximum_number_of_attempts: $Maximum_number_of_attempts"
 			log "当前循环counter= $counter"
-			if aria2c -q --show-console-readout --file-allocation=none -o "$download_file"; then
+			if aria2c -q --show-console-readout=true --file-allocation=none -o "$download_file"; then
 				echo -e "${INFO}文件存储在${RED}$download_file${RES}"
 				log "下载成功：$download_file"
 				break
