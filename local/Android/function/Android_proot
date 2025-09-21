@@ -1,0 +1,387 @@
+self_install proot 
+mkdir -p ${HOME}/.termux/共享文件夹
+open_debian_os_list() {
+	debian_os_list=$(
+		whiptail --title "选择功能" --menu "请选择你需要安装Debian系统" 15 60 6 \
+			"1" "Bookworm（Debian 12）" \
+			"2" "Bullseye（Debian 11）" \
+			"3" "Buster（Debian 10）" \
+			"0" "退出" 3>&1 1>&2 2>&3
+	)
+	case ${debian_os_list} in
+	1)
+		os_name=Bookworm_Debian_12
+		Download_proot_NAME=$(curl -s "${Proot_os_download_source}/debian/bookworm/${archurl}/default/" | grep -oP '<a href="[^"]*">\K[^<]*' | sed -n '2s|/$||p')
+		Download_proot_url=${Proot_os_download_source}/debian/bookworm/${archurl}/default/${Download_proot_NAME}/rootfs.tar.xz
+		;;
+	2)
+		os_name=Bullseye_Debian_11
+		Download_proot_NAME=$(curl -s "${Proot_os_download_source}/debian/bullseye/${archurl}/default/" | grep -oP '<a href="[^"]*">\K[^<]*' | sed -n '2s|/$||p')
+		Download_proot_url=${Proot_os_download_source}/debian/bullseye/${archurl}/default/${Download_proot_NAME}/rootfs.tar.xz
+		;;
+	3)
+		os_name=Buster_Debian_10
+		Download_proot_NAME=$(curl -s "${Proot_os_download_source}/debian/buster/${archurl}/default/" | grep -oP '<a href="[^"]*">\K[^<]*' | sed -n '2s|/$||p')
+		Download_proot_url=${Proot_os_download_source}/debian/buster/${archurl}/default/${Download_proot_NAME}/rootfs.tar.xz
+		;;
+	*)
+		exit 1
+		;;
+	esac
+}
+
+open_ubuntu_os_list() {
+	ubuntu_os_list=$(
+		whiptail --title "选择功能" --menu "选择要安装的Ubuntu系统" 15 60 6 \
+			"1" "Jammy（22.04 LTS）" \
+			"2" "Noble（24.04 LTS）" \
+			"3" "Plucky（25.04 LTS）" \
+			"0" "退出" 3>&1 1>&2 2>&3
+	)
+	case ${ubuntu_os_list} in
+
+	1)
+		os_name=Jammy_Ubuntu_22.04
+		Download_proot_NAME=$(curl -s "${Proot_os_download_source}/ubuntu/jammy/${archurl}/default/" | grep -oP '<a href="[^"]*">\K[^<]*' | sed -n '2s|/$||p')
+		Download_proot_url=${Proot_os_download_source}/ubuntu/jammy/${archurl}/default/${Download_proot_NAME}/rootfs.tar.xz
+		;;
+	2)
+		os_name=Noble_Ubuntu_24.04
+		Download_proot_NAME=$(curl -s "${Proot_os_download_source}/ubuntu/noble/${archurl}/default/" | grep -oP '<a href="[^"]*">\K[^<]*' | sed -n '2s|/$||p')
+		Download_proot_url=${Proot_os_download_source}/ubuntu/noble/${archurl}/default/${Download_proot_NAME}/rootfs.tar.xz
+		;;
+	3)
+		os_name=Plucky_Ubuntu_25.04
+		Download_proot_NAME=$(curl -s "${Proot_os_download_source}/ubuntu/plucky/${archurl}/default/" | grep -oP '<a href="[^"]*">\K[^<]*' | sed -n '2s|/$||p')
+		Download_proot_url=${Proot_os_download_source}/ubuntu/plucky/${archurl}/default/${Download_proot_NAME}/rootfs.tar.xz
+		;;
+	*)
+		exit 1
+		;;
+	esac
+}
+
+open_rockylinux_os_list() {
+	rockylinux_os_list=$(
+		whiptail --title "选择功能" --menu "请选择需要安装的Rocky系统" 15 60 6 \
+			"1" "Rocky_Linux_8" \
+			"2" "Rocky_Linux_9" \
+			"0" "退出" 3>&1 1>&2 2>&3
+	)
+	case ${rockylinux_os_list} in
+	1)
+		os_name=Rocky_Linux_8
+		Download_proot_NAME=$(curl -s "${Proot_os_download_source}/rockylinux/8/${archurl}/default/" | grep -oP '<a href="[^"]*">\K[^<]*' | sed -n '2s|/$||p')
+		Download_proot_url=${Proot_os_download_source}/rockylinux/8/${archurl}/default/${Download_proot_NAME}/rootfs.tar.xz
+		;;
+	2)
+		os_name=Rocky_Linux_9
+		Download_proot_NAME=$(curl -s "${Proot_os_download_source}/rockylinux/9/${archurl}/default/" | grep -oP '<a href="[^"]*">\K[^<]*' | sed -n '2s|/$||p')
+		Download_proot_url=${Proot_os_download_source}/rockylinux/9/${archurl}/default/${Download_proot_NAME}/rootfs.tar.xz
+		;;
+	*)
+		exit 1
+		;;
+	esac
+}
+
+open_centos_os_list() {
+	centos_os_list=$(
+		whiptail --title "选择功能" --menu "请选择需要安装的CentOS系统" 15 60 6 \
+			"1" "centos_9-Stream" \
+			"0" "退出" 3>&1 1>&2 2>&3
+	)
+	case ${centos_os_list} in
+	1)
+		os_name=centos_9-Stream
+		Download_proot_NAME=$(curl -s "${Proot_os_download_source}/centos/9-Stream/${archurl}/default/" | grep -oP '<a href="[^"]*">\K[^<]*' | sed -n '2s|/$||p')
+		Download_proot_url=${Proot_os_download_source}/centos/9-Stream/${archurl}/default/${Download_proot_NAME}/rootfs.tar.xz
+		;;
+	*)
+		exit 1
+		;;
+	esac
+}
+
+install_proot() {
+	case "$(uname -m)" in
+	aarch64)
+		archurl="arm64"
+		;;
+	armv7l)
+		archurl="armhf"
+		;;
+	x86_64)
+		archurl="amd64"
+		;;
+	*)
+		echo -e "${ERROR}未知框架"
+		exit
+		;;
+	esac
+	mkdir -p "${HOME}/.termux/MikuOne-NEXT/proot"
+	Proot_os_download_source="https://sgp1lxdmirror01.do.letsbuildthe.cloud/images"
+	open_proot_os_list=$(
+		whiptail --title "选择功能" --menu "请选择你需要安装的系统" 15 60 7 \
+			"1" "ubuntu" \
+			"2" "debian" \
+			"3" "rockylinux" \
+			"4" "centos" \
+			"0" "退出" 3>&1 1>&2 2>&3
+	)
+	case ${open_proot_os_list} in
+	1)
+		open_ubuntu_os_list
+		log "安装ubuntu系列"
+		;;
+	2)
+		open_debian_os_list
+		log "debian系列"
+		;;
+	3)
+		open_rockylinux_os_list
+		log "安装rockylinux系列"
+		;;
+	4)
+		open_centos_os_list
+		log "安装centos系列"
+		;;
+	*)
+		log "未选择退出"
+		exit 1
+		;;
+	esac
+	log "os_name: ${os_name}"
+	log "Download_proot_NAME: ${Download_proot_NAME}"
+	log "Download_proot_url: ${Download_proot_url}"
+
+	wget_proot_url(){
+		while [ $counter -lt $Maximum_number_of_attempts ]; do
+			log "最大循环Maximum_number_of_attempts: $Maximum_number_of_attempts"
+			log "当前循环counter= $counter"
+			if aria2c -q --show-console-readout --file-allocation=none -o "$download_file"; then
+				echo -e "${INFO}文件存储在${RED}$download_file${RES}"
+				log "下载成功：$download_file"
+				break
+			else
+				echo -e "${WORRY}请检查网络访问问题${RES}"
+				log "下载失败：$download_file"
+				if [ $counter -eq 0 ]; then
+					Download_proot_url="https://dl.gancmcs.top/${Download_proot_url}"
+					log "尝试使用备用 URL 下载，更新 Download_proot_url 为 \"$Download_proot_url\""
+				fi
+				if [ $counter -eq $((Maximum_number_of_attempts - 1)) ]; then
+					echo -e "${ERROR}多次下载失败，退出程序"
+					exit 1
+				fi
+			fi
+
+			((counter++))
+		done
+	}
+
+	download_file="${HOME}/MikuOne-NEXT/download/${os_name}.tar.xz"
+	# 检查文件是否存在并且文件大小是否小于40MB
+	if [ -f "$download_file" ] && [ $(du -b "$download_file" | cut -f1) -lt 41943040 ]; then
+		echo -e "${WORRY}${RED}${download_file}${RES}可能已经损坏"
+		log "\"${HOME}/MikuOne-NEXT/download/${os_name}.tar.xz\"文件损坏，重新下载"
+		log "下载url:\"${Download_proot_url}\" 保存到 \"$download_file\""
+		counter=0
+		Maximum_number_of_attempts=2  # 定义最大重试次数
+		wget_proot_url
+	elif [ -f "$download_file" ]; then
+		log "\"${HOME}/MikuOne-NEXT/download/${os_name}.tar.xz\"存在且大于40MBB"
+	else
+		log "\"${HOME}/MikuOne-NEXT/download/${os_name}.tar.xz\"不存在"
+		log "下载url:\"${Download_proot_url}\" 保存到 \"$download_file\""
+		counter=0
+		Maximum_number_of_attempts=2  # 
+		wget_proot_url
+	fi
+
+	# 提示清理空间
+	echo -e "${INFO}您可以使用${RED}rm -rfv $download_file${RES}来节省存储空间"
+
+	unset LD_PRELOAD
+	mkdir -p ${HOME}/.termux/MikuOne-NEXT/proot/${os_name}
+	log "解压\"${HOME}/MikuOne-NEXT/download/${os_name}.tar.xz\""
+	proot --link2symlink tar --overwrite -xJf ${HOME}/MikuOne-NEXT/download/${os_name}.tar.xz -C ${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/ --exclude='dev' || :
+	chmod 777 "${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/root/"
+	chmod 777 "${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/proc/"
+	echo -e "${GREEN}复制脚本到容器${RES}"
+	log "复制脚本到容器"
+	mkdir -p ${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/root/MikuOne-NEXT
+	mkdir -p ${HOME}/.termux/MikuOne-NEXT/.重要文件夹/sys/.empty
+	mkdir -p ${HOME}/.termux/MikuOne-NEXT/.重要文件夹/dev/shm
+	cp -r ${HOME}/MikuOne-NEXT/config ${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/root/MikuOne-NEXT
+	cp -r ${HOME}/MikuOne-NEXT/function ${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/root/MikuOne-NEXT
+	cp -r ${HOME}/MikuOne-NEXT/local ${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/root/MikuOne-NEXT
+	cp ${HOME}/MikuOne-NEXT/MikuOne-NEXT.sh ${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/root/MikuOne-NEXT
+	cp ${HOME}/MikuOne-NEXT/git_push.sh ${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/root/MikuOne-NEXT
+	echo -e "${GREEN}复制优化脚本到容器${RES}"
+	cp ${HOME}/MikuOne-NEXT/function/proot_proc/.* ${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/proc/
+	cp ${HOME}/MikuOne-NEXT/function/proot_optimization ${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/root/优化.sh
+	proot \
+		--link2symlink -0 \
+		--rootfs=${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/ \
+		--bind=/dev \
+		--bind=/sys \
+		--bind=/proc \
+		--bind="${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/proc/.loadavg:/proc/loadavg" \
+		--bind="${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/proc/.version:/proc/version" \
+		--bind="${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/proc/.uptime:/proc/uptime" \
+		--bind="${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/proc/.stat:/proc/stat" \
+		--bind="${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/proc/.vmstat:/proc/vmstat" \
+		--bind="${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/proc/.sysctl_entry_cap_last_cap:/proc/sysctl_entry_cap_last_cap" \
+		--kernel-release="5.15.0" \
+		-w /root /usr/bin/env \
+		-i HOME=/root \
+		PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games \
+		TERM=xterm-256color \
+		LANG=zh_CN.UTF-8 \
+		LC_CTYPE="zh_CN.UTF-8" \
+		LC_NUMERIC="zh_CN.UTF-8" \
+		LC_TIME="zh_CN.UTF-8" \
+		LC_COLLATE="zh_CN.UTF-8" \
+		LC_MONETARY="zh_CN.UTF-8" \
+		LC_MESSAGES="zh_CN.UTF-8" \
+		LC_PAPER="zh_CN.UTF-8" \
+		LC_NAME="zh_CN.UTF-8" \
+		LC_ADDRESS="zh_CN.UTF-8" \
+		LC_TELEPHONE="zh_CN.UTF-8" \
+		LC_MEASUREMENT="zh_CN.UTF-8" \
+		LC_IDENTIFICATION="zh_CN.UTF-8" \
+		/bin/bash 优化.sh
+	log "优化脚本执行成功"
+	log "退出容器"
+
+}
+start_proot() {
+	list_dir ${HOME}/.termux/MikuOne-NEXT/proot
+	case $user_choice in
+	0)
+		echo -e "${RED}quit${RES}"
+		log "退出"
+		;;
+	*)
+		if [ ! $? = 0 ]; then
+			exit
+		fi
+		os_name=${list_items[$((user_choice - 1))]}
+		log "进入容器${os_name}"
+		unset LD_PRELOAD
+		proot \
+			--bind=/data/data/com.termux/files/usr \
+			--bind=/vendor \
+			--bind=/system \
+			--bind=/system/product \
+			--bind=/odm \
+			--bind=/apex \
+			--bind=/data/data/com.termux/cache \
+			--bind=/data/dalvik-cache \
+			--bind=/data/app \
+			--bind=/proc:/proc \
+			--bind=/data/data/com.termux/files/home/.termux/共享文件夹:/termux共享文件夹 \
+			--bind=${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/proc/.sysctl_inotify_max_user_watches:/proc/sys/fs/inotify/max_user_watches \
+			--bind=${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/proc/.sysctl_entry_cap_last_cap:/proc/sys/kernel/cap_last_cap \
+			--bind=${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/proc/.vmstat:/proc/vmstat \
+			--bind=${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/proc/.version:/proc/version \
+			--bind=${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/proc/.uptime:/proc/uptime \
+			--bind=${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/proc/.stat:/proc/stat \
+			--bind=${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/proc/.loadavg:/proc/loadavg \
+			--bind=${HOME}/.termux/MikuOne-NEXT/.重要文件夹/sys/.empty:/sys/fs/selinux \
+			--bind=${HOME}/.termux/MikuOne-NEXT/.重要文件夹/dev/shm:/dev/shm \
+			--bind=/sys \
+			--bind=/proc/self/fd/2:/dev/stderr \
+			--bind=/proc/self/fd/1:/dev/stdout \
+			--bind=/proc/self/fd/0:/dev/stdin \
+			--bind=/proc/self/fd:/dev/fd \
+			--bind=/proc \
+			--bind=/dev/urandom:/dev/random \
+			--bind=/dev \
+			-L \
+			--kernel-release=6.2.1-PRoot-Distro \
+			--sysvipc \
+			--link2symlink \
+			--kill-on-exit \
+			--cwd=/root \
+			--change-id=0:0 \
+			--rootfs=${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/ \
+			/usr/bin/env -i \
+			PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games \
+			TERM=xterm-256color \
+			system_os_type=proot \
+			system_os_type2=${os_name} \
+			LANG=zh_CN.UTF-8 \
+			LC_CTYPE="zh_CN.UTF-8" \
+			LC_NUMERIC="zh_CN.UTF-8" \
+			LC_TIME="zh_CN.UTF-8" \
+			LC_COLLATE="zh_CN.UTF-8" \
+			LC_MONETARY="zh_CN.UTF-8" \
+			LC_MESSAGES="zh_CN.UTF-8" \
+			LC_PAPER="zh_CN.UTF-8" \
+			LC_NAME="zh_CN.UTF-8" \
+			LC_ADDRESS="zh_CN.UTF-8" \
+			LC_TELEPHONE="zh_CN.UTF-8" \
+			LC_MEASUREMENT="zh_CN.UTF-8" \
+			LC_IDENTIFICATION="zh_CN.UTF-8" \
+			ANDROID_DATA=/data \
+			ANDROID_ROOT=/system \
+			ANDROID_RUNTIME_ROOT=/apex/com.android.runtime \
+			ANDROID_TZDATA_ROOT=/apex/com.android.tzdata \
+			BOOTCLASSPATH=/apex/com.android.runtime/javalib/core-oj.jar:/apex/com.android.runtime/javalib/core-libart.jar:/apex/com.android.runtime/javalib/okhttp.jar:/apex/com.android.runtime/javalib/bouncycastle.jar:/apex/com.android.runtime/javalib/apache-xml.jar:/system/framework/framework.jar:/system/framework/ext.jar:/system/framework/telephony-common.jar:/system/framework/voip-common.jar:/system/framework/ims-common.jar:/system/framework/android.test.base.jar:/system/framework/tcmiface.jar:/system/framework/qcom.fmradio.jar:/system/framework/QPerformance.jar:/system/framework/UxPerformance.jar:/system/framework/WfdCommon.jar:/system/framework/vivo-framework.jar:/system/framework/vivo-media.jar:/system/framework/framework-adapter.jar:/system/framework/soc-framework.jar:/system/framework/vendor.factory.hardware.vivoem-V1.0-java.jar:/system/framework/vivo-vgcclient.jar:/system/framework/telephony-ext.jar:/system/framework/com.qti.location.sdk.jar:/apex/com.android.conscrypt/javalib/conscrypt.jar:/apex/com.android.media/javalib/updatable-media.jar \
+			DEX2OATBOOTCLASSPATH=/apex/com.android.runtime/javalib/core-oj.jar:/apex/com.android.runtime/javalib/core-libart.jar:/apex/com.android.runtime/javalib/okhttp.jar:/apex/com.android.runtime/javalib/bouncycastle.jar:/apex/com.android.runtime/javalib/apache-xml.jar:/system/framework/framework.jar:/system/framework/ext.jar:/system/framework/telephony-common.jar:/system/framework/voip-common.jar:/system/framework/ims-common.jar:/system/framework/android.test.base.jar:/system/framework/tcmiface.jar:/system/framework/qcom.fmradio.jar:/system/framework/QPerformance.jar:/system/framework/UxPerformance.jar:/system/framework/WfdCommon.jar:/system/framework/vivo-framework.jar:/system/framework/vivo-media.jar:/system/framework/framework-adapter.jar:/system/framework/soc-framework.jar:/system/framework/vendor.factory.hardware.vivoem-V1.0-java.jar:/system/framework/vivo-vgcclient.jar:/system/framework/telephony-ext.jar:/system/framework/com.qti.location.sdk.jar \
+			COLORTERM=truecolor \
+			LANG=en_US.UTF-8 \
+			MOZ_FAKE_NO_SANDBOX=1 \
+			PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/games:/usr/games:/data/data/com.termux/files/usr/bin:/system/bin:/system/xbin \
+			PULSE_SERVER=127.0.0.1 \
+			TERM=xterm-256color \
+			TMPDIR=/tmp \
+			ANDROID_DATA=/data \
+			ANDROID_ROOT=/system \
+			ANDROID_RUNTIME_ROOT=/apex/com.android.runtime \
+			ANDROID_TZDATA_ROOT=/apex/com.android.tzdata \
+			BOOTCLASSPATH=/apex/com.android.runtime/javalib/core-oj.jar:/apex/com.android.runtime/javalib/core-libart.jar:/apex/com.android.runtime/javalib/okhttp.jar:/apex/com.android.runtime/javalib/bouncycastle.jar:/apex/com.android.runtime/javalib/apache-xml.jar:/system/framework/framework.jar:/system/framework/ext.jar:/system/framework/telephony-common.jar:/system/framework/voip-common.jar:/system/framework/ims-common.jar:/system/framework/android.test.base.jar:/system/framework/tcmiface.jar:/system/framework/qcom.fmradio.jar:/system/framework/QPerformance.jar:/system/framework/UxPerformance.jar:/system/framework/WfdCommon.jar:/system/framework/vivo-framework.jar:/system/framework/vivo-media.jar:/system/framework/framework-adapter.jar:/system/framework/soc-framework.jar:/system/framework/vendor.factory.hardware.vivoem-V1.0-java.jar:/system/framework/vivo-vgcclient.jar:/system/framework/telephony-ext.jar:/system/framework/com.qti.location.sdk.jar:/apex/com.android.conscrypt/javalib/conscrypt.jar:/apex/com.android.media/javalib/updatable-media.jar \
+			DEX2OATBOOTCLASSPATH=/apex/com.android.runtime/javalib/core-oj.jar:/apex/com.android.runtime/javalib/core-libart.jar:/apex/com.android.runtime/javalib/okhttp.jar:/apex/com.android.runtime/javalib/bouncycastle.jar:/apex/com.android.runtime/javalib/apache-xml.jar:/system/framework/framework.jar:/system/framework/ext.jar:/system/framework/telephony-common.jar:/system/framework/voip-common.jar:/system/framework/ims-common.jar:/system/framework/android.test.base.jar:/system/framework/tcmiface.jar:/system/framework/qcom.fmradio.jar:/system/framework/QPerformance.jar:/system/framework/UxPerformance.jar:/system/framework/WfdCommon.jar:/system/framework/vivo-framework.jar:/system/framework/vivo-media.jar:/system/framework/framework-adapter.jar:/system/framework/soc-framework.jar:/system/framework/vendor.factory.hardware.vivoem-V1.0-java.jar:/system/framework/vivo-vgcclient.jar:/system/framework/telephony-ext.jar:/system/framework/com.qti.location.sdk.jar \
+			COLORTERM=truecolor \
+			HOME=/root \
+			USER=root \
+			TERM=xterm-256color \
+			/bin/bash --login
+		log "退出${os_name}"
+		;;
+	esac
+}
+rm_proot() {
+	list_dir ${HOME}/.termux/MikuOne-NEXT/proot
+	case $user_choice in
+	0)
+		echo -e "${RED}quit${RES}"
+		log "退出"
+		;;
+	*)
+		if [ ! $? = 0 ]; then
+			exit
+		fi
+		os_name=${list_items[$((user_choice - 1))]}
+		num1=$((RANDOM % 100))
+		num2=$((RANDOM % 100))
+		log "num1=$num1 num2=$num2"
+		# 读取用户输入
+		read -e -p "${num1}+${num2}=?" user_sum
+		log "user_sum=$user_sum"
+		# 计算正确的和
+		correct_sum=$(($num1 + $num2))
+		# 检查用户输入是否正确
+		if [ $user_sum -eq $correct_sum ]; then
+			echo -e "验证完成！您已证明您是人类，继续操作"
+			chmod 777 -R "${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/"
+			rm -rfv "${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/"
+			# 在这里添加你想要执行的命令
+		else
+			echo -e "错误！你输入的和不正确。删除程序将不执行。"
+		fi
+		;;
+	esac
+}

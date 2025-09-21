@@ -1,0 +1,13 @@
+garbage_collection() {
+	ls -la ${HOME}/MikuOne-NEXT/download
+	read -e -p "你要删除这些文件吗？（删除后将无法找回）[Y/n]: " delete_files
+	if [[ $delete_files =~ ^[Yy]$ ]]; then
+		rm -rf ${HOME}/dowload/*
+		echo -e "${SUSSEC}所有文件已删除。"
+		log "所有文件已删除。"
+	else
+		echo -e "${INFO}文件未删除。"
+		log "文件未删除。"
+	fi
+
+}
