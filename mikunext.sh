@@ -1,84 +1,49 @@
-# # 脚本功能概述
-# 该脚本主要用于系统管理和软件包的安装维护，支持 Android 系统。它包含了颜色定义、错误和信息提示、系统架构判断、软件包安装函数、目录有效性检查、Git 默认源设置、变量修改以及菜单选择等功能。
+RED='\e[1;31m'
+GREEN='\e[1;32m'
+YELLOW='\e[1;33m'
+BLUE='\e[1;34m'
+PINK='\e[1;35m'
+RES='\e[0m'
 
-# # 主要函数说明
-# - `variable`: 加载配置文件。
-# - `self_install`: 根据传入的参数，使用对应的包管理器安装指定的软件包。
-# - `hcjx`: 提示用户按回车键继续。
-# - `validity_git`: 设置 Git 默认源。
-# - `validity_dir`: 检查并创建必要的目录。
-# - `validity`: 执行目录和 Git 源的有效性检查。
-# - `Modify_the_variable`: 修改配置文件中的变量值。
-# - `list_dir`: 显示目录列表供用户选择。
-# - `apt_up`: 更新和升级 APT 包管理器的软件包。
+ERROR="[${RED}错误${RES}]:"
+WORRY="[${YELLOW}警告${RES}]:"
+SUSSEC="[${GREEN}成功${RES}]:"
+INFO="[${BLUE}信息${RES}]:"
 
-# # 使用说明
-# 脚本通过命令行参数执行不同的操作，支持 `-h` 或 `--help` 参数显示帮助信息。主要执行流程包括系统架构判断、软件包安装、目录和 Git 源检查，以及根据系统类型加载相应的菜单。
-#字体颜色
-########################################################
-RED='\e[1;31m'                   # 红 ${RED}
-GREEN='\e[1;32m'                 # 绿 ${GREEN}
-YELLOW='\e[1;33m'                # 黄 ${YELLOW}
-BLUE='\e[1;34m'                  # 蓝 ${BLUE}
-PINK='\e[1;35m'                  # 粉红 ${PINK}
-RES='\e[0m'                      # 清除颜色 ${RES}
-##字体颜色
-
-ERROR="[${RED}错误${RES}]:"    # ${ERROR}
-WORRY="[${YELLOW}警告${RES}]:" # ${WORRY}
-SUSSEC="[${GREEN}成功${RES}]:" # ${SUSSEC}
-INFO="[${BLUE}信息${RES}]:"    # ${INFO}
-
-#常用变量和函数
-########################################################
 declare -A arch_map=(["aarch64"]="arm64" ["armv7l"]="armhf" ["x86_64"]="amd64")
 archurl="${arch_map[$(uname -m)]}"
 
 variable() {
 	source ${HOME}/MikuOne-NEXT/config/config.sh
 }
-log() {
-	#log文件名
-	local fileName="${HOME}/MikuOne-NEXT/log.log"
-	#log文件最大存储log行数（此处设置最大存储log行数是100行）
-	local fileMaxLen=100
-	#超过log最大存储行数后需要从顶部开始删除的行数（此处设置的是删除第1到第10行的数据）
-	local fileDeleteLen=10
-	if test $fileName; then
-		#记录log
-		echo "[$(date +%y/%m/%d-%H:%M:%S)]:$*" >>$fileName
-		#获取log文件实际行数
-		loglen=$(grep -c "" $fileName)
 
-		if [ $loglen -gt $fileMaxLen ]; then
-			#从顶部开始删除对应行数的log
-			sed -i '1,'$fileDeleteLen'd' $fileName
+log() {
+	local fileName="${HOME}/MikuOne-NEXT/log.log"
+	local fileMaxLen=100
+	local fileDeleteLen=10
+	if test -f "$fileName"; then
+		echo "[$(date +%y/%m/%d-%H:%M:%S)]:$*" >>"$fileName"
+		loglen=$(grep -c "" "$fileName")
+		if [ "$loglen" -gt "$fileMaxLen" ]; then
+			sed -i "1,${fileDeleteLen}d" "$fileName"
 		fi
 	else
-		echo "[$(date +%y/%m/%d-%H:%M:%S)]:$*" >$fileName
+		echo "[$(date +%y/%m/%d-%H:%M:%S)]:$*" >"$fileName"
 	fi
 }
-
-# testdate=100
-# #记录输出的字符串
-# log "test string"
-# #记录输出的数据
-# log "testdate=$testdate"
-# #记录输出的运算
-# log $[1+2]
-# #记录命令输出的信息
-# log $(printf "this is cmd test %s\n" "this is cmd output string")
 
 self_install() {
 	if ! command -v "$1" &>/dev/null; then
 		echo -e "${RED}未安装 $1，正在安装...${RES}"
-		${package_manager} install -y "$1"
+		"${package_manager}" install -y "$1"
 	fi
 }
+
 hcjx() {
 	echo -e "${GREEN}请按回车键继续...${RES}"
 	read -r
 }
+
 validity_git() {
 	source ${HOME}/MikuOne-NEXT/config/config.sh
 	if [ "${git}" = "" ]; then
@@ -88,26 +53,27 @@ validity_git() {
 				"3" "Github加速代理" \
 				"0" "退出" 3>&1 1>&2 2>&3
 		)
-		case ${wheregit} in
+		case "${wheregit}" in
 		1)
-			Modify_the_variable git "https:\/\/github.com\/YingLi606\/MikuOne-NEXT.git" ${HOME}/MikuOne-NEXT/config/config.sh
-			Modify_the_variable rawgit "https:\/\/raw.githubusercontent.com\/YingLi606\/MikuOne-NEXT\/refs\/heads\/main\/" ${HOME}/MikuOne-NEXT/config/config.sh
+			Modify_the_variable git "https:\/\/github.com\/YingLi606\/MikuOne-NEXT.git" "${HOME}/MikuOne-NEXT/config/config.sh"
+			Modify_the_variable rawgit "https:\/\/raw.githubusercontent.com\/YingLi606\/MikuOne-NEXT\/refs\/heads\/main\/" "${HOME}/MikuOne-NEXT/config/config.sh"
 			return 0
 			;;
 		3)
-			Modify_the_variable git "https:\/\/dl.gancmcs.top\/https:\/\/github.com\/YingLi606\/MikuOne-NEXT.git" ${HOME}/MikuOne-NEXT/config/config.sh
-			Modify_the_variable rawgit "https:\/\/dl.gancmcs.top\/https:\/\/raw.githubusercontent.com\/YingLi606\/MikuOne-NEXT\/refs\/heads\/main\/" ${HOME}/MikuOne-NEXT/config/config.sh
+			Modify_the_variable git "https:\/\/dl.gancmcs.top\/https:\/\/github.com\/YingLi606\/MikuOne-NEXT.git" "${HOME}/MikuOne-NEXT/config/config.sh"
+			Modify_the_variable rawgit "https:\/\/dl.gancmcs.top\/https:\/\/raw.githubusercontent.com\/YingLi606\/MikuOne-NEXT\/refs\/heads\/main\/" "${HOME}/MikuOne-NEXT/config/config.sh"
 			return 0
 			;;
 		*)
 			echo -e " 未选择默认修改为 ${YELLOW}Github${RES} "
-			Modify_the_variable git "https:\/\/github.com\/YingLi606\/MikuOne-NEXT.git" ${HOME}/MikuOne-NEXT/config/config.sh
-			Modify_the_variable rawgit "https:\/\/raw.githubusercontent.com\/YingLi606\/MikuOne-NEXT\/refs\/heads\/main\/" ${HOME}/MikuOne-NEXT/config/config.sh
+			Modify_the_variable git "https:\/\/github.com\/YingLi606\/MikuOne-NEXT.git" "${HOME}/MikuOne-NEXT/config/config.sh"
+			Modify_the_variable rawgit "https:\/\/raw.githubusercontent.com\/YingLi606\/MikuOne-NEXT\/refs\/heads\/main\/" "${HOME}/MikuOne-NEXT/config/config.sh"
 			return 0
 			;;
 		esac
 	fi
 }
+
 validity_auto_upgrade() {
 	source ${HOME}/MikuOne-NEXT/config/config.sh
 	if [ "${auto_upgrade}" = "" ]; then
@@ -117,91 +83,86 @@ validity_auto_upgrade() {
 				"2" "关闭" \
 				"0" "退出" 3>&1 1>&2 2>&3
 		)
-		case ${wheregit} in
+		case "${wheregit}" in
 		1)
-			Modify_the_variable auto_upgrade "true" ${HOME}/MikuOne-NEXT/config/config.sh
+			Modify_the_variable auto_upgrade "true" "${HOME}/MikuOne-NEXT/config/config.sh"
 			log "自动升级脚本开启"
 			return 0
 			;;
 		2)
-			Modify_the_variable auto_upgrade "false" ${HOME}/MikuOne-NEXT/config/config.sh
+			Modify_the_variable auto_upgrade "false" "${HOME}/MikuOne-NEXT/config/config.sh"
 			log "自动升级脚本关闭"
 			return 0
 			;;
 		*)
 			echo -e " 未选择默认修改为 ${YELLOW}false${RES} "
-			Modify_the_variable auto_upgrade "false" ${HOME}/MikuOne-NEXT/config/config.sh
+			Modify_the_variable auto_upgrade "false" "${HOME}/MikuOne-NEXT/config/config.sh"
 			log "自动升级脚本关闭"
-			
 			return 0
 			;;
 		esac
 	fi
 }
+
 validity_dir() {
-	mkdir -p ${HOME}/MikuOne-NEXT/{download,config}
-	mkdir -p ${HOME}/.back
-	mkdir -p ${HOME}/.TEMP
+	mkdir -p "${HOME}/MikuOne-NEXT/{download,config}"
+	mkdir -p "${HOME}/.back"
+	mkdir -p "${HOME}/.TEMP"
 }
+
 validity() {
 	validity_dir
 	validity_git
 	validity_auto_upgrade
 }
+
 Modify_the_variable() {
-	sed -i "s/^${1}=.*/${1}=${2}/" ${3}
-	#使用格式
-	#Modify_the_variable 变量名 变量值 变量存储位置
-	#Modify_the_variable git github.com ${HOME}/MikuOne-NEXT/config/config.sh
-	#更改变量
+	sed -i "s/^${1}=.*/${1}=${2}/" "${3}"
 }
+
 list_dir() {
 	current_index=1
-	list=$(ls $1)
+	list=$(ls "$1")
 	list_items=($list)
 	list_names=""
-
 	for item in $list; do
 		list_names+=" ${current_index} ${item}"
 		let current_index++
 	done
 	user_choice=$(whiptail --title "选择" --menu "选择功能" 15 70 8 0 返回上级 ${list_names} 3>&1 1>&2 2>&3)
-	# 选择结果 ${list_items[$((user_choice-1))]}
 }
+
 apt_up() {
 	source ${HOME}/MikuOne-NEXT/config/config.sh
 	current_timestamp=$(date +%s)
 	if [[ -z "${last_time_aptup}" || $((current_timestamp - last_time_aptup)) -ge $((5 * 24 * 60 * 60)) ]]; then
 		if [ "${auto_upgrade}" = "true" ]; then
 			log "自动升级脚本开启"
-			$package_manager update -y && $package_manager upgrade -y
-			Modify_the_variable last_time_aptup ${current_timestamp} ${HOME}/MikuOne-NEXT/config/config.sh
+			"${package_manager}" update -y && "${package_manager}" upgrade -y
+			Modify_the_variable last_time_aptup "${current_timestamp}" "${HOME}/MikuOne-NEXT/config/config.sh"
 		else
 			log "自动升级脚本未开启"
 		fi
 	fi
 }
+
 debuger() {
-    INFO="\033[1;34m[信息]\033[0m"
-    RES="\033[0m"
-    SUCCESS="\033[1;32m[完成]\033[0m"
-    
     echo -e "\n${INFO}==================== 脚本调试信息 ====================\033[0m"
     sleep 0.8
     
     echo -e "\n${INFO}正在读取脚本配置文件..."
     sleep 0.6
     if [ -f "${HOME}/MikuOne-NEXT/config/config.sh" ]; then
-        echo -e "${SUCCESS}脚本定义的变量："
+        echo -e "${SUSSEC}脚本定义的变量："
         cat "${HOME}/MikuOne-NEXT/config/config.sh"
     else
-        echo -e "\033[1;31m[警告]\033[0m 配置文件 ${HOME}/MikuOne-NEXT/config/config.sh 不存在！"
+        echo -e "${WORRY} 配置文件 ${HOME}/MikuOne-NEXT/config/config.sh 不存在！"
     fi
     sleep 1
     
     echo -e "\n${INFO}正在检测运行环境..."
     sleep 0.5
-    echo -e "${SUCCESS}当前运行环境：Android Termux"
+    echo -e "${SUSSEC}当前运行环境：Android Termux"
     sleep 0.6
     
     echo -e "\n${INFO}环境备注：Termux专属轻量Linux环境，无需额外检测发行版"
@@ -211,9 +172,9 @@ debuger() {
     sleep 0.6
     IP=$(ifconfig | grep inet | grep -vE 'inet6|127.0.0.1|100.100.' | awk '{print $2}' | head -n1)
     if [ -n "$IP" ]; then
-        echo -e "${SUCCESS}设备IP地址：$IP"
+        echo -e "${SUSSEC}设备IP地址：$IP"
     else
-        echo -e "\033[1;33m[提示]\033[0m 未检测到有效IP（可能处于离线或仅本地网络）"
+        echo -e "${WORRY} 未检测到有效IP（可能处于离线或仅本地网络）"
     fi
     sleep 0.8
     
@@ -225,11 +186,11 @@ debuger() {
     cpu_idle=$(top -b -n 1 | grep Cpu | awk '{print $8}' | cut -f 1 -d "%")
     cpu_iowait=$(top -b -n 1 | grep Cpu | awk '{print $10}' | cut -f 1 -d "%")
     
-    echo -e "${SUCCESS}CPU总核数：$cpu_num"
-    echo -e "${SUCCESS}用户空间占用CPU：${cpu_user}%"
-    echo -e "${SUCCESS}内核空间占用CPU：${cpu_system}%"
-    echo -e "${SUCCESS}空闲CPU：${cpu_idle}%"
-    echo -e "${SUCCESS}IO等待占用CPU：${cpu_iowait}%"
+    echo -e "${SUSSEC}CPU总核数：$cpu_num"
+    echo -e "${SUSSEC}用户空间占用CPU：${cpu_user}%"
+    echo -e "${SUSSEC}内核空间占用CPU：${cpu_system}%"
+    echo -e "${SUSSEC}空闲CPU：${cpu_idle}%"
+    echo -e "${SUSSEC}IO等待占用CPU：${cpu_iowait}%"
     sleep 1
     
     echo -e "\n${INFO}正在读取内存信息..."
@@ -243,70 +204,60 @@ debuger() {
     mem_swap_used=$(free | grep Swap | awk '{print $3 " KB"}')
     mem_swap_free=$(free | grep Swap | awk '{print $4 " KB"}')
     
-    echo -e "${SUCCESS}物理内存总量：$mem_total"
-    echo -e "${SUCCESS}系统已用内存：$mem_sys_used"
-    echo -e "${SUCCESS}系统空闲内存：$mem_sys_free"
-    echo -e "${SUCCESS}应用已用内存：$mem_user_used"
-    echo -e "${SUCCESS}应用空闲内存：$mem_user_free"
-    echo -e "${SUCCESS}交换分区总量：$mem_swap_total"
-    echo -e "${SUCCESS}交换分区已用：$mem_swap_used"
-    echo -e "${SUCCESS}交换分区空闲：$mem_swap_free"
+    echo -e "${SUSSEC}物理内存总量：$mem_total"
+    echo -e "${SUSSEC}系统已用内存：$mem_sys_used"
+    echo -e "${SUSSEC}系统空闲内存：$mem_sys_free"
+    echo -e "${SUSSEC}应用已用内存：$mem_user_used"
+    echo -e "${SUSSEC}应用空闲内存：$mem_user_free"
+    echo -e "${SUSSEC}交换分区总量：$mem_swap_total"
+    echo -e "${SUSSEC}交换分区已用：$mem_swap_used"
+    echo -e "${SUSSEC}交换分区空闲：$mem_swap_free"
     sleep 1
     
     echo -e "\n${INFO}正在读取近期运行日志（最后50行）..."
     sleep 0.8
     if [ -f "${HOME}/MikuOne-NEXT/log.log" ]; then
-        echo -e "${SUCCESS}近期日志内容："
+        echo -e "${SUSSEC}近期日志内容："
         tail -n 50 "${HOME}/MikuOne-NEXT/log.log"
     else
-        echo -e "\033[1;31m[警告]\033[0m 日志文件 ${HOME}/MikuOne-NEXT/log.log 不存在！"
+        echo -e "${WORRY} 日志文件 ${HOME}/MikuOne-NEXT/log.log 不存在！"
     fi
     sleep 0.5
-    echo -e "\n${SUCCESS}==================== 调试信息显示完毕 ====================\033[0m"
+    echo -e "\n${SUSSEC}==================== 调试信息显示完毕 ====================\033[0m"
 }
 
 get_linux_distro() {
-    local INFO="\033[1;34m[信息]\033[0m"
-    local SUCCESS="\033[1;32m[完成]\033[0m"
     echo -e "${INFO}正在确认发行版..."
     sleep 0.5
-    echo -e "${SUCCESS}当前发行版：termux"
+    echo -e "${SUSSEC}当前发行版：termux"
     echo "termux"
 }
 
 detect_package_manager() {
-    local INFO="\033[1;34m[信息]\033[0m"
-    local SUCCESS="\033[1;32m[完成]\033[0m"
     local package_manager="pkg"
     
     echo -e "\n${INFO}正在检测包管理器（Termux环境）..."
     sleep 0.6
-    if command -v $package_manager >/dev/null 2>&1; then
-        echo -e "${SUCCESS}检测到的包管理器：$package_manager"
+    if command -v "$package_manager" >/dev/null 2>&1; then
+        echo -e "${SUSSEC}检测到的包管理器：$package_manager"
         echo "$package_manager"
     else
-        echo -e "\033[1;31m[错误]\033[0m Termux默认包管理器 pkg 未找到！请检查Termux环境是否正常。"
+        echo -e "${ERROR} Termux默认包管理器 pkg 未找到！请检查Termux环境是否正常。"
         return 1
     fi
     sleep 0.5
 }
 
- 
-# 主程序
 package_manager=$(detect_package_manager)
-#函数
 
 case ${1} in
 -h | --help)
 	echo -e "
 -h | --help\t\t\t\t显示帮助信息
 -s | --start [Android]\t启动脚本固定版本 [功能]
-
 \t\tAndroid:
 \t\t\tinstall proot\t\t安装proot工具
 \t\t\tstart proot\t\t启动proot服务
-
-
 "
 	hcjx
 	;;
