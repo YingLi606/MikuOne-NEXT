@@ -134,7 +134,8 @@ if [ "$(printf '%s\n' "$REMOTE_VERSION" "$LOCAL_VERSION" | sort -V | tail -n1)" 
 		Modify_the_variable qqBot ${qqBot} ${HOME}/MikuOne-NEXT/config/config.sh
 	fi
 	chmod 777 ${HOME}/MikuOne-NEXT/mikunext.sh
-	echo "更新完成！当前版本: $REMOTE_VERSION"
+	echo "更新完成！请重启脚本!当前版本: $REMOTE_VERSION"
+	sleep 2
 	log 更新成功
 else
 	echo "✅ 当前是最新版本，无需更新！"

@@ -1,5 +1,5 @@
 {
-    "version": "1.0.3",
+    "version": "1.0.4",
     "git_clone": "YingLi606/MikuOne-NEXT",
     "description": "'修复了已知问题，并且新增了语言配置完成后安装MikuOne"
 }

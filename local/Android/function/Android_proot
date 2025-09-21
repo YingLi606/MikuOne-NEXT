@@ -203,36 +203,36 @@ install_proot() {
 	echo -e "${INFO}您可以使用${RED}rm -rfv $download_file${RES}来节省存储空间"
 
 	unset LD_PRELOAD
-	mkdir -p ${HOME}/.termux/gancm/proot/${os_name}
+	mkdir -p ${HOME}/.termux/MikuOne-NEXT/proot/${os_name}
 	log "解压\"${HOME}/MikuOne-NEXT/download/${os_name}.tar.xz\""
-	proot --link2symlink tar --overwrite -xJf ${HOME}/MikuOne-NEXT/download/${os_name}.tar.xz -C ${HOME}/.termux/gancm/proot/${os_name}/ --exclude='dev' || :
-	chmod 777 "${HOME}/.termux/gancm/proot/${os_name}/root/"
-	chmod 777 "${HOME}/.termux/gancm/proot/${os_name}/proc/"
+	proot --link2symlink tar --overwrite -xJf ${HOME}/MikuOne-NEXT/download/${os_name}.tar.xz -C ${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/ --exclude='dev' || :
+	chmod 777 "${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/root/"
+	chmod 777 "${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/proc/"
 	echo -e "${GREEN}复制脚本到容器${RES}"
 	log "复制脚本到容器"
-	mkdir -p ${HOME}/.termux/gancm/proot/${os_name}/root/MikuOne-NEXT
-	mkdir -p ${HOME}/.termux/gancm/.重要文件夹/sys/.empty
-	mkdir -p ${HOME}/.termux/gancm/.重要文件夹/dev/shm
-	cp -r ${HOME}/MikuOne-NEXT/config ${HOME}/.termux/gancm/proot/${os_name}/root/MikuOne-NEXT
-	cp -r ${HOME}/MikuOne-NEXT/function ${HOME}/.termux/gancm/proot/${os_name}/root/MikuOne-NEXT
-	cp -r ${HOME}/MikuOne-NEXT/local ${HOME}/.termux/gancm/proot/${os_name}/root/MikuOne-NEXT
-	cp ${HOME}/MikuOne-NEXT/gancm.sh ${HOME}/.termux/gancm/proot/${os_name}/root/MikuOne-NEXT
-	cp ${HOME}/MikuOne-NEXT/git_push.sh ${HOME}/.termux/gancm/proot/${os_name}/root/MikuOne-NEXT
+	mkdir -p ${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/root/MikuOne-NEXT
+	mkdir -p ${HOME}/.termux/MikuOne-NEXT/.重要文件夹/sys/.empty
+	mkdir -p ${HOME}/.termux/MikuOne-NEXT/.重要文件夹/dev/shm
+	cp -r ${HOME}/MikuOne-NEXT/config ${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/root/MikuOne-NEXT
+	cp -r ${HOME}/MikuOne-NEXT/function ${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/root/MikuOne-NEXT
+	cp -r ${HOME}/MikuOne-NEXT/local ${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/root/MikuOne-NEXT
+	cp ${HOME}/MikuOne-NEXT/mikunext.sh ${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/root/MikuOne-NEXT
+	cp ${HOME}/MikuOne-NEXT/git_push.sh ${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/root/MikuOne-NEXT
 	echo -e "${GREEN}复制优化脚本到容器${RES}"
-	cp ${HOME}/MikuOne-NEXT/function/proot_proc/.* ${HOME}/.termux/gancm/proot/${os_name}/proc/
-	cp ${HOME}/MikuOne-NEXT/function/proot_optimization ${HOME}/.termux/gancm/proot/${os_name}/root/优化.sh
+	cp ${HOME}/MikuOne-NEXT/function/proot_proc/.* ${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/proc/
+	cp ${HOME}/MikuOne-NEXT/function/proot_optimization ${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/root/优化.sh
 	proot \
 		--link2symlink -0 \
-		--rootfs=${HOME}/.termux/gancm/proot/${os_name}/ \
+		--rootfs=${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/ \
 		--bind=/dev \
 		--bind=/sys \
 		--bind=/proc \
-		--bind="${HOME}/.termux/gancm/proot/${os_name}/proc/.loadavg:/proc/loadavg" \
-		--bind="${HOME}/.termux/gancm/proot/${os_name}/proc/.version:/proc/version" \
-		--bind="${HOME}/.termux/gancm/proot/${os_name}/proc/.uptime:/proc/uptime" \
-		--bind="${HOME}/.termux/gancm/proot/${os_name}/proc/.stat:/proc/stat" \
-		--bind="${HOME}/.termux/gancm/proot/${os_name}/proc/.vmstat:/proc/vmstat" \
-		--bind="${HOME}/.termux/gancm/proot/${os_name}/proc/.sysctl_entry_cap_last_cap:/proc/sysctl_entry_cap_last_cap" \
+		--bind="${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/proc/.loadavg:/proc/loadavg" \
+		--bind="${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/proc/.version:/proc/version" \
+		--bind="${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/proc/.uptime:/proc/uptime" \
+		--bind="${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/proc/.stat:/proc/stat" \
+		--bind="${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/proc/.vmstat:/proc/vmstat" \
+		--bind="${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/proc/.sysctl_entry_cap_last_cap:/proc/sysctl_entry_cap_last_cap" \
 		--kernel-release="5.15.0" \
 		-w /root /usr/bin/env \
 		-i HOME=/root \
@@ -257,7 +257,7 @@ install_proot() {
 
 }
 start_proot() {
-	list_dir ${HOME}/.termux/gancm/proot
+	list_dir ${HOME}/.termux/MikuOne-NEXT/proot
 	case $user_choice in
 	0)
 		echo -e "${RED}quit${RES}"
@@ -282,15 +282,15 @@ start_proot() {
 			--bind=/data/app \
 			--bind=/proc:/proc \
 			--bind=/data/data/com.termux/files/home/.termux/共享文件夹:/termux共享文件夹 \
-			--bind=${HOME}/.termux/gancm/proot/${os_name}/proc/.sysctl_inotify_max_user_watches:/proc/sys/fs/inotify/max_user_watches \
-			--bind=${HOME}/.termux/gancm/proot/${os_name}/proc/.sysctl_entry_cap_last_cap:/proc/sys/kernel/cap_last_cap \
-			--bind=${HOME}/.termux/gancm/proot/${os_name}/proc/.vmstat:/proc/vmstat \
-			--bind=${HOME}/.termux/gancm/proot/${os_name}/proc/.version:/proc/version \
-			--bind=${HOME}/.termux/gancm/proot/${os_name}/proc/.uptime:/proc/uptime \
-			--bind=${HOME}/.termux/gancm/proot/${os_name}/proc/.stat:/proc/stat \
-			--bind=${HOME}/.termux/gancm/proot/${os_name}/proc/.loadavg:/proc/loadavg \
-			--bind=${HOME}/.termux/gancm/.重要文件夹/sys/.empty:/sys/fs/selinux \
-			--bind=${HOME}/.termux/gancm/.重要文件夹/dev/shm:/dev/shm \
+			--bind=${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/proc/.sysctl_inotify_max_user_watches:/proc/sys/fs/inotify/max_user_watches \
+			--bind=${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/proc/.sysctl_entry_cap_last_cap:/proc/sys/kernel/cap_last_cap \
+			--bind=${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/proc/.vmstat:/proc/vmstat \
+			--bind=${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/proc/.version:/proc/version \
+			--bind=${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/proc/.uptime:/proc/uptime \
+			--bind=${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/proc/.stat:/proc/stat \
+			--bind=${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/proc/.loadavg:/proc/loadavg \
+			--bind=${HOME}/.termux/MikuOne-NEXT/.重要文件夹/sys/.empty:/sys/fs/selinux \
+			--bind=${HOME}/.termux/MikuOne-NEXT/.重要文件夹/dev/shm:/dev/shm \
 			--bind=/sys \
 			--bind=/proc/self/fd/2:/dev/stderr \
 			--bind=/proc/self/fd/1:/dev/stdout \
@@ -306,7 +306,7 @@ start_proot() {
 			--kill-on-exit \
 			--cwd=/root \
 			--change-id=0:0 \
-			--rootfs=${HOME}/.termux/gancm/proot/${os_name}/ \
+			--rootfs=${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/ \
 			/usr/bin/env -i \
 			PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games \
 			TERM=xterm-256color \
@@ -354,7 +354,7 @@ start_proot() {
 	esac
 }
 rm_proot() {
-	list_dir ${HOME}/.termux/gancm/proot
+	list_dir ${HOME}/.termux/MikuOne-NEXT/proot
 	case $user_choice in
 	0)
 		echo -e "${RED}quit${RES}"
@@ -377,8 +377,8 @@ rm_proot() {
 		if [ $user_sum -eq $correct_sum ]; then
 			echo -e "验证完成！您已证明人是人类，继续操作"
 			sleep 2
-			chmod 777 -R "${HOME}/.termux/gancm/proot/${os_name}/"
-			rm -rfv "${HOME}/.termux/gancm/proot/${os_name}/"
+			chmod 777 -R "${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/"
+			rm -rfv "${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/"
 			# 在这里添加你想要执行的命令
 		else
 			echo -e "错误！你输入的和不正确，本次验证不通过"
