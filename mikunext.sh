@@ -270,7 +270,7 @@ case "${1}" in
 		self_install git
 		self_install wget
 		self_install whiptail
-		self_install aria2c
+		self_install aria2
 		self_install tmux
 		self_install bc
 		validity
