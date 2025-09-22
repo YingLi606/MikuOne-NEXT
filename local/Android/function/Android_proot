@@ -127,7 +127,7 @@ install_proot() {
 			"2" "🍥 Debian" \
 			"3" "🍐 Rockylinux" \
 			"4" "🥝 CentOS" \
-			"0" "🌚 返回上一级" 3>&1 1>&2 2>&3
+			"0" "🌚 退出" 3>&1 1>&2 2>&3
 	)
 	case ${open_proot_os_list} in
 	1)
@@ -147,8 +147,8 @@ install_proot() {
 		log "安装centos系列"
 		;;
 	*)
-		log "未选择返回上一级"
-		return 1
+		log "未选择退出"
+		exit 1
 		;;
 	esac
 	log "os_name: ${os_name}"
