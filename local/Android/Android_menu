@@ -37,7 +37,7 @@ start)
 	;;
 *)
 	Android_menu=$(
-		whiptail --title "选择功能" --menu "termux按自己需求来" 15 60 8 \
+		whiptail --title "选择功能" --menu "MikuOne-NEXT-V1.0.5-f2" 15 60 8 \
 			"1" "管理proot容器" \
 			"2" "垃圾清理" \
 			"0" "退出" \
@@ -47,7 +47,7 @@ start)
 	1)
 		log "管理proot容器"
 		open_proot=$(
-			whiptail --title "选择功能" --menu "termux按自己需求来" 15 60 4 \
+			whiptail --title "选择功能" --menu "请按自己的需求来" 15 60 4 \
 				"1" "安装proot容器" \
 				"2" "启动proot容器" \
 				"3" "删除proot容器" \
@@ -68,7 +68,7 @@ start)
 			;;
 		*)
 			log "退出"
-			echo -e "${RED}quit$RES"
+			echo -e "${RED}QUIT$RES"
 			;;
 		esac
 		;;

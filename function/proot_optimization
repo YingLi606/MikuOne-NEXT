@@ -139,14 +139,14 @@ sleep 2
 clear
 
 if [ $whiptail_available -eq 1 ]; then
-    whiptail --title "是否安装MikuOne？" --yesno "是否需要安装MikuOne？" 10 60
+    whiptail --title "是否安装MikuOne？" --yesno "是否需要安装MikuOne？该工具用于很大用途" 10 60
     if [ $? -eq 0 ]; then
         echo -e "${SUSSEC} 用户选择安装MikuOne，正在克隆仓库...${RES}"
         git clone https://dl.gancmcs.top/https://github.com/YingLi606/MikuOne.git
         
         sleep 2
         clear
-        echo -e "${SUSSEC} MikuOne安装步骤已执行（无论克隆成败），请重新启动脚本即可${RES}"
+        echo -e "${SUSSEC} MikuOne已完成安装步骤，请重新启动脚本即可（如果失败，请手动从Github仓库克隆）${RES}"
     else
         clear
         echo -e "${INFO} 用户选择无需安装MikuOne，该步骤跳过，请重新启动脚本即可${RES}"

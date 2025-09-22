@@ -1,5 +1,5 @@
 {
-    "version": "1.0.5-f1",
+    "version": "1.0.5-f2",
     "git_clone": "YingLi606/MikuOne-NEXT",
     "description": "'修复了已知问题,同时将Debian10已替换成Debian 13"
 }

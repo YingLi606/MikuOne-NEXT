@@ -6,7 +6,7 @@ open_debian_os_list() {
 			"1" "Trixie（Debian 13）" \
 			"2" "Bookworm（Debian 12）" \
 			"3" "Bullseye（Debian 11）" \
-			"0" "退出" 3>&1 1>&2 2>&3
+			"0" "返回上一级" 3>&1 1>&2 2>&3
 	)
 	case ${debian_os_list} in
     1)
@@ -25,7 +25,7 @@ open_debian_os_list() {
 		Download_proot_url=${Proot_os_download_source}/debian/bullseye/${archurl}/default/${Download_proot_NAME}/rootfs.tar.xz
 		;;
 	*)
-		exit 1
+		return 1
 		;;
 	esac
 }
@@ -36,7 +36,7 @@ open_ubuntu_os_list() {
 			"1" "Jammy（22.04 LTS）" \
 			"2" "Noble（24.04 LTS）" \
 			"3" "Plucky（25.04 LTS）" \
-			"0" "退出" 3>&1 1>&2 2>&3
+			"0" "返回上一级" 3>&1 1>&2 2>&3
 	)
 	case ${ubuntu_os_list} in
 
@@ -56,7 +56,7 @@ open_ubuntu_os_list() {
 		Download_proot_url=${Proot_os_download_source}/ubuntu/plucky/${archurl}/default/${Download_proot_NAME}/rootfs.tar.xz
 		;;
 	*)
-		exit 1
+		return 1
 		;;
 	esac
 }
@@ -66,7 +66,7 @@ open_rockylinux_os_list() {
 		whiptail --title "选择功能" --menu "请选择你要安装的Rockylinux系统" 15 60 6 \
 			"1" "Rocky_Linux_8" \
 			"2" "Rocky_Linux_9" \
-			"0" "退出" 3>&1 1>&2 2>&3
+			"0" "返回上一级" 3>&1 1>&2 2>&3
 	)
 	case ${rockylinux_os_list} in
 	1)
@@ -80,7 +80,7 @@ open_rockylinux_os_list() {
 		Download_proot_url=${Proot_os_download_source}/rockylinux/9/${archurl}/default/${Download_proot_NAME}/rootfs.tar.xz
 		;;
 	*)
-		exit 1
+		return 1
 		;;
 	esac
 }
@@ -89,7 +89,7 @@ open_centos_os_list() {
 	centos_os_list=$(
 		whiptail --title "选择功能" --menu "请选择你要安装的CentOS系统" 15 60 6 \
 			"1" "centos_9-Stream" \
-			"0" "退出" 3>&1 1>&2 2>&3
+			"0" "返回上一级" 3>&1 1>&2 2>&3
 	)
 	case ${centos_os_list} in
 	1)
@@ -98,7 +98,7 @@ open_centos_os_list() {
 		Download_proot_url=${Proot_os_download_source}/centos/9-Stream/${archurl}/default/${Download_proot_NAME}/rootfs.tar.xz
 		;;
 	*)
-		exit 1
+		return 1
 		;;
 	esac
 }
@@ -127,7 +127,7 @@ install_proot() {
 			"2" "🍥 Debian" \
 			"3" "🍐 Rockylinux" \
 			"4" "🥝 CentOS" \
-			"0" "🌚 退出" 3>&1 1>&2 2>&3
+			"0" "🌚 返回上一级" 3>&1 1>&2 2>&3
 	)
 	case ${open_proot_os_list} in
 	1)
@@ -147,8 +147,8 @@ install_proot() {
 		log "安装centos系列"
 		;;
 	*)
-		log "未选择退出"
-		exit 1
+		log "未选择返回上一级"
+		return 1
 		;;
 	esac
 	log "os_name: ${os_name}"

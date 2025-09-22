@@ -1,13 +1,30 @@
 garbage_collection() {
-	ls -la ${HOME}/MikuOne-NEXT/download
-	read -e -p "你要删除这些文件吗？（删除后将无法找回,请慎重考虑）[Y/n]: " delete_files
-	if [[ $delete_files =~ ^[Yy]$ ]]; then
-		rm -rvf ${HOME}/dowload/*
-		echo -e "${SUSSEC}所有文件已删除。"
-		log "所有文件已删除。"
-	else
-		echo -e "${INFO}文件未删除。"
-		log "文件未删除。"
-	fi
+    target_dir="${HOME}/MikuOne-NEXT/download"
+    
+    if [ ! -d "$target_dir" ]; then
+        echo -e "${WORRY}目标目录 $target_dir 不存在，无需删除。"
+        log "目标目录 $target_dir 不存在，删除操作跳过。"
+        return 1
+    fi
 
+    echo -e "${INFO}当前 ${target_dir} 目录下的内容："
+    ls -la "$target_dir"
+
+    read -e -p "你要删除该目录下的所有文件吗？（删除后将无法找回，请慎重考虑）[Y/n]: " delete_files
+    delete_files=${delete_files:-n}
+
+    if [[ "$delete_files" =~ ^[Yy]$ ]]; then
+        find "$target_dir" -mindepth 1 -delete
+        
+        if [ -z "$(ls -A "$target_dir")" ]; then
+            echo -e "${SUSSEC}${target_dir} 目录下所有文件已成功删除。"
+            log "${target_dir} 目录下所有文件已成功删除。"
+        else
+            echo -e "${ERROR}${target_dir} 目录下文件删除失败，部分文件可能残留。"
+            log "${target_dir} 目录下文件删除失败，部分文件可能残留。"
+        fi
+    else
+        echo -e "${INFO}已取消删除操作，${target_dir} 目录下文件保持不变。"
+        log "已取消删除操作，${target_dir} 目录下文件保持不变。"
+    fi
 }

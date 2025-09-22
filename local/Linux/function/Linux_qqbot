@@ -23,7 +23,7 @@ startNapCatQQ() {
 			if [ ${QQbot} = "" ]; then
 				read -e -p "请输入您的选择：" QQbot
 				log "QQbot为空"
-				Modify_the_variable QQbot ${QQbot} ${HOME}/.gancm/config/config.sh
+				Modify_the_variable QQbot ${QQbot} ${HOME}/MikuOne-NEXT/config/config.sh
 			fi
 			case ${1} in
 			--Background | -B)

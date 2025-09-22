@@ -1,9 +1,9 @@
-# if source $HOME/.gancm/local/Linux/Linux_function; then
+# if source $HOME/MikuOne-NEXT/local/Linux/Linux_function; then
 # 	echo -e "${SUSSEC}加载Linux功能成功"
 # else
 # 	echo -e "${WORRY}加载Linux功能失败"
 # fi
-for script in $HOME/.gancm/local/Linux/function/*; do
+for script in $HOME/MikuOne-NEXT/local/Linux/function/*; do
 	source "$script"
 	log "加载:$script"
 done
@@ -107,16 +107,16 @@ startNapCatQQB | startnQQB)
 			download_JAVA
 			;;
 		*)
-			echo -e "${RED}quit$RES"
+			echo -e "${RED}QUIT$RES"
 			;;
 		esac
 		;;
 	2)
 		QQBot_menu=$(
-			whiptail --title "选择功能" --menu "QQ机器人按自己需求来" 15 60 8 \
+			whiptail --title "选择功能" --menu "请按自己的需求来" 15 60 8 \
 				"1" "管理NapCatQQ" \
 				"2" "管理机器人" \
-				"0" "退出" 3>&1 1>&2 2>&3
+				"0" "返回上一级" 3>&1 1>&2 2>&3
 		)
 		case $QQBot_menu in
 		1)
@@ -149,7 +149,7 @@ startNapCatQQB | startnQQB)
 				hcjx
 				;;
 			*)
-				echo -e "${RED}quit$RES"
+				return 1
 				;;
 			esac
 			;;
@@ -161,9 +161,6 @@ startNapCatQQB | startnQQB)
 
 	D)
 		debuger
-		;;
-	*)
-		echo -e "待添加_Linux_menu"
 		;;
 	esac
 	;;
