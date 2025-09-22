@@ -1,5 +1,5 @@
 {
-    "version": "1.0.4",
+    "version": "1.0.5",
     "git_clone": "YingLi606/MikuOne-NEXT",
-    "description": "'修复了已知问题，并且新增了语言配置完成后安装MikuOne"
+    "description": "'修复了已知问题,同时将Debian10已替换成Debian 13"
 }

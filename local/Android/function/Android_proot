@@ -3,26 +3,26 @@ mkdir -p ${HOME}/.termux/共享文件夹
 open_debian_os_list() {
 	debian_os_list=$(
 		whiptail --title "选择功能" --menu "请选择你需要安装Debian系统" 15 60 6 \
-			"1" "Bookworm（Debian 12）" \
-			"2" "Bullseye（Debian 11）" \
-			"3" "Buster（Debian 10）" \
+			"1" "Trixie（Debian 13）" \
+			"2" "Bookworm（Debian 12）" \
+			"3" "Bullseye（Debian 11）" \
 			"0" "退出" 3>&1 1>&2 2>&3
 	)
 	case ${debian_os_list} in
-	1)
+    1)
+		os_name=Trixie_Debian_13
+		Download_proot_NAME=$(curl -s "${Proot_os_download_source}/debian/trixie/${archurl}/default/" | grep -oP '<a href="[^"]*">\K[^<]*' | sed -n '2s|/$||p')
+		Download_proot_url=${Proot_os_download_source}/debian/trixie/${archurl}/default/${Download_proot_NAME}/rootfs.tar.xz
+		;;
+	2)
 		os_name=Bookworm_Debian_12
 		Download_proot_NAME=$(curl -s "${Proot_os_download_source}/debian/bookworm/${archurl}/default/" | grep -oP '<a href="[^"]*">\K[^<]*' | sed -n '2s|/$||p')
 		Download_proot_url=${Proot_os_download_source}/debian/bookworm/${archurl}/default/${Download_proot_NAME}/rootfs.tar.xz
 		;;
-	2)
+	3)
 		os_name=Bullseye_Debian_11
 		Download_proot_NAME=$(curl -s "${Proot_os_download_source}/debian/bullseye/${archurl}/default/" | grep -oP '<a href="[^"]*">\K[^<]*' | sed -n '2s|/$||p')
 		Download_proot_url=${Proot_os_download_source}/debian/bullseye/${archurl}/default/${Download_proot_NAME}/rootfs.tar.xz
-		;;
-	3)
-		os_name=Buster_Debian_10
-		Download_proot_NAME=$(curl -s "${Proot_os_download_source}/debian/buster/${archurl}/default/" | grep -oP '<a href="[^"]*">\K[^<]*' | sed -n '2s|/$||p')
-		Download_proot_url=${Proot_os_download_source}/debian/buster/${archurl}/default/${Download_proot_NAME}/rootfs.tar.xz
 		;;
 	*)
 		exit 1
@@ -32,7 +32,7 @@ open_debian_os_list() {
 
 open_ubuntu_os_list() {
 	ubuntu_os_list=$(
-		whiptail --title "选择功能" --menu "ubuntu容器推荐MC开服" 15 60 6 \
+		whiptail --title "选择功能" --menu "请选择你要安装的Ubuntu版本系统" 15 60 6 \
 			"1" "Jammy（22.04 LTS）" \
 			"2" "Noble（24.04 LTS）" \
 			"3" "Plucky（25.04 LTS）" \
@@ -122,12 +122,12 @@ install_proot() {
 	mkdir -p "${HOME}/.termux/MikuOne-NEXT/proot"
 	Proot_os_download_source="https://sgp1lxdmirror01.do.letsbuildthe.cloud/images"
 	open_proot_os_list=$(
-		whiptail --title "选择功能" --menu "proot容器按自己需求来" 15 60 7 \
-			"1" "ubuntu" \
-			"2" "debian" \
-			"3" "rockylinux" \
-			"4" "centos" \
-			"0" "退出" 3>&1 1>&2 2>&3
+		whiptail --title "选择功能" --menu "请选择你需要安装的Proot容器系统" 15 60 7 \
+			"1" "🍎 Ubuntu" \
+			"2" "🍥 Debian" \
+			"3" "🍐 Rockylinux" \
+			"4" "🥝 CentOS" \
+			"0" "🌚 退出" 3>&1 1>&2 2>&3
 	)
 	case ${open_proot_os_list} in
 	1)
