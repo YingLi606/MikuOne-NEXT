@@ -68,8 +68,8 @@ ${wherejava} -Xms"$min_memory" -Xmx"$max_memory" -jar "${HOME}/.termux/MikuOne-N
 " >${HOME}/.termux/MikuOne-NEXT/MCserver/${Core_version}/${Game_version}/start.sh
 		;;
 	2)
-		echo "${INFO}退出程序"
-		exit 0
+		echo "${INFO}返回上一级"
+		return 1
 		;;
 	*)
 		echo -e "${ERROR}无效的选项，请重新运行脚本并选择1或2。"

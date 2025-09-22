@@ -260,8 +260,9 @@ start_proot() {
 	list_dir ${HOME}/.termux/MikuOne-NEXT/proot
 	case $user_choice in
 	0)
-		echo -e "${RED}quit${RES}"
-		log "退出"
+		echo -e "${RED}返回上一级${RES}"
+		log "返回上一级"
+		return 1
 		;;
 	*)
 		if [ ! $? = 0 ]; then
@@ -357,8 +358,9 @@ rm_proot() {
 	list_dir ${HOME}/.termux/MikuOne-NEXT/proot
 	case $user_choice in
 	0)
-		echo -e "${RED}quit${RES}"
-		log "退出"
+		echo -e "${RED}返回上一级${RES}"
+		log "返回上一级"
+		return 1
 		;;
 	*)
 		if [ ! $? = 0 ]; then
@@ -379,10 +381,15 @@ rm_proot() {
 			sleep 2
 			chmod 777 -R "${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/"
 			rm -rfv "${HOME}/.termux/MikuOne-NEXT/proot/${os_name}/"
-			# 在这里添加你想要执行的命令
+			echo -e "删除完成,正在返回上一级"
+			sleep 2
+			clear
+			return 1
 		else
 			echo -e "错误！你输入的和不正确，本次验证不通过"
 			sleep 2
+			clear
+			return 1
 		fi
 		;;
 	esac

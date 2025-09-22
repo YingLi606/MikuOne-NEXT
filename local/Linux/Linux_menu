@@ -67,7 +67,7 @@ startNapCatQQB | startnQQB)
 				"7" "停止我的世界面板" \
 				"8" "安装我的世界面板" \
 				"9" "安装java" \
-				"0" "返回上一级" 3>&1 1>&2 2>&3
+				"0" "退出" 3>&1 1>&2 2>&3
 		)
 		case $MC_Server in
 		1)
@@ -107,7 +107,7 @@ startNapCatQQB | startnQQB)
 			download_JAVA
 			;;
 		*)
-			return 1
+			exit 1
 			;;
 		esac
 		;;
@@ -127,7 +127,7 @@ startNapCatQQB | startnQQB)
 					"2" "启动NapCatQQ" \
 					"3" "后台启动NapCatQQ" \
 					"4" "WebUI地址" \
-					"0" "返回上一级" 3>&1 1>&2 2>&3
+					"0" "退出" 3>&1 1>&2 2>&3
 			)
 			case $QQBotTX_menu in
 			1)
@@ -149,7 +149,7 @@ startNapCatQQB | startnQQB)
 				hcjx
 				;;
 			*)
-				return 1
+				exit 1
 				;;
 			esac
 			;;

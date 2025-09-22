@@ -64,7 +64,7 @@ log "公告: $DESCRIPTION"
 if [ "$(printf '%s\n' "$REMOTE_VERSION" "$LOCAL_VERSION" | sort -V | tail -n1)" != "$LOCAL_VERSION" ]; then
 	echo "本地版本: $LOCAL_VERSION"
 	echo "云端版本: $REMOTE_VERSION"
-	echo "公告: $DESCRIPTION"
+	echo "公告: $DESCRIPTION "
 
 	echo "发现新版本，准备更新..."
 
