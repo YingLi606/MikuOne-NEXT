@@ -44,7 +44,7 @@ startNapCatQQB | startnQQB)
 	fi
 
 	Linux_menu=$(
-		whiptail --title "Linux_menu" --menu "MikuOne-NEXT-V1.0.5-f3" 15 60 4 \
+		whiptail --title "MikuOne-NEXT V1.0.6" --menu "请选择功能" 15 60 4 \
 			"1" "管理mc Server" \
 			"2" "QQ机器人" \
 			"0" "退出" \
@@ -67,7 +67,7 @@ startNapCatQQB | startnQQB)
 				"7" "停止我的世界面板" \
 				"8" "安装我的世界面板" \
 				"9" "安装java" \
-				"0" "退出" 3>&1 1>&2 2>&3
+				"0" "返回上一级" 3>&1 1>&2 2>&3
 		)
 		case $MC_Server in
 		1)
@@ -127,7 +127,7 @@ startNapCatQQB | startnQQB)
 					"2" "启动NapCatQQ" \
 					"3" "后台启动NapCatQQ" \
 					"4" "WebUI地址" \
-					"0" "退出" 3>&1 1>&2 2>&3
+					"0" "返回上一级" 3>&1 1>&2 2>&3
 			)
 			case $QQBotTX_menu in
 			1)
@@ -154,7 +154,8 @@ startNapCatQQB | startnQQB)
 			esac
 			;;
 		*)
-			echo -e "${RED}quit$RES"
+			echo -e "${RED}QUIT$RES"
+			exit 1
 			;;
 		esac
 		;;

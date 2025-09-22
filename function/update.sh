@@ -116,6 +116,7 @@ if [ "$(printf '%s\n' "$REMOTE_VERSION" "$LOCAL_VERSION" | sort -V | tail -n1)" 
 	echo "1秒后重启..."
 	sleep 1
 	clear
+	exit 1
 	${HOME}/MikuOne-NEXT/mikunext.sh
 else
 	echo "✅ 当前是最新版本，无需更新！"
