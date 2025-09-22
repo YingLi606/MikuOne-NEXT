@@ -80,6 +80,22 @@ hcjx() {
     read -r
 }
 
+echo -e "${INFO}正在优化系统，请勿退出！"
+echo "127.0.0.1 localhost" >/etc/hosts
+mkdir -p /run/systemd/resolve
+echo -e "${GREEN}正在配置DNS${RES}"
+echo -e "nameserver 8.8.8.8
+nameserver 114.114.114.114" >/run/systemd/resolve/stub-resolv.conf
+echo -e "nameserver 8.8.8.8
+nameserver 114.114.114.114" >/etc/resolv.conf
+echo -e "${GREEN}尝试禁用无用检测${RES}"
+ln -s ~/MikuOne-NEXT/mikunext.sh /usr/bin/mikunext
+chmod 777 /usr/bin/mikunext
+touch ~/.hushlogin
+$package_manager update -y &
+$package_manager upgrade -y
+Modify_the_variable last_time_aptup $(date +%s) ${HOME}/MikuOne-NEXT/config/config.sh
+
 current_distro=$(get_linux_distro)
 supported_distros=("ubuntu" "debian" "kali" "gxde")
 whiptail_available=0
@@ -101,22 +117,6 @@ else
     echo -e "${INFO}当前系统${current_distro}不支持MikuOne安装，跳过whiptail检测与相关流程${RES}"
     whiptail_available=0
 fi
-
-echo -e "${INFO}正在优化系统，请勿退出！"
-echo "127.0.0.1 localhost" >/etc/hosts
-mkdir -p /run/systemd/resolve
-echo -e "${GREEN}正在配置DNS${RES}"
-echo -e "nameserver 8.8.8.8
-nameserver 114.114.114.114" >/run/systemd/resolve/stub-resolv.conf
-echo -e "nameserver 8.8.8.8
-nameserver 114.114.114.114" >/etc/resolv.conf
-echo -e "${GREEN}尝试禁用无用检测${RES}"
-ln -s ~/MikuOne-NEXT/mikunext.sh /usr/bin/mikunext
-chmod 777 /usr/bin/mikunext
-touch ~/.hushlogin
-$package_manager update -y &
-$package_manager upgrade -y
-Modify_the_variable last_time_aptup $(date +%s) ${HOME}/MikuOne-NEXT/config/config.sh
 
 self_install language-pack-zh-hans
 self_install fonts-wqy-microhei
@@ -141,13 +141,12 @@ clear
 if [ $whiptail_available -eq 1 ]; then
     whiptail --title "是否安装MikuOne？" --yesno "是否需要安装MikuOne？" 10 60
     if [ $? -eq 0 ]; then
-        clear
         echo -e "${SUSSEC} 用户选择安装MikuOne，正在克隆仓库...${RES}"
         git clone https://dl.gancmcs.top/https://github.com/YingLi606/MikuOne.git
         
         sleep 2
         clear
-        echo -e "${SUSSEC} MikuOne安装步骤已执行，请重新启动脚本即可${RES}"
+        echo -e "${SUSSEC} MikuOne安装步骤已执行（无论克隆成败），请重新启动脚本即可${RES}"
     else
         clear
         echo -e "${INFO} 用户选择无需安装MikuOne，该步骤跳过，请重新启动脚本即可${RES}"
