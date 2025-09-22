@@ -107,7 +107,7 @@ startNapCatQQB | startnQQB)
 			download_JAVA
 			;;
 		*)
-			echo -e "${RED}QUIT$RES"
+			return 1
 			;;
 		esac
 		;;
@@ -116,7 +116,7 @@ startNapCatQQB | startnQQB)
 			whiptail --title "选择功能" --menu "请按自己的需求来" 15 60 8 \
 				"1" "管理NapCatQQ" \
 				"2" "管理机器人" \
-				"0" "返回上一级" 3>&1 1>&2 2>&3
+				"0" "退出" 3>&1 1>&2 2>&3
 		)
 		case $QQBot_menu in
 		1)
