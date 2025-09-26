@@ -1,5 +1,5 @@
 {
-    "version": "1.0.8",
+    "version": "1.0.9",
     "git_clone": "YingLi606/MikuOne-NEXT",
-    "description": "'修复了已知问题"
+    "description": "'增加了副本协议"
 }

@@ -46,11 +46,10 @@ bash ~/MikuOne-NEXT/mikunext.sh
 
 ## 特技
 
-- 安装QQ或微信软件目前支持部分架构（ARM64、AMD64）
 - 自动检测系统环境并提示适配选项
 - 提供分类清晰的交互式菜单
 - 支持网络测速
 
 ## 协议
 
-本项目遵循相关License，请参阅 LICENSE 文件获取详细信息。
+本项目遵循副本License，请参阅 LICENSE 文件获取详细信息。
