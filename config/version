@@ -1,5 +1,5 @@
 {
-    "version": "1.1.5",
+    "version": "1.1.6",
     "git_clone": "YingLi606/MikuOne-NEXT",
-    "description": "'新增了Android应用商店（公测）"
+    "description": "'修复了aria2c无法使用多进程下载问题"
 }

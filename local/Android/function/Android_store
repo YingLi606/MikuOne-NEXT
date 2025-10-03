@@ -58,7 +58,7 @@ zerotermux_install() {
 
     echo -e "\033[36m=== 开始多线程下载 ZeroTermux 安装包 ===\033[0m"
     echo -e "\033[36m保存路径：$SAVE_PATH\033[0m"
-    aria2c --max-concurrent-downloads=1 --split=10 --progress=yes -o "$SAVE_PATH" "$DOWNLOAD_URL"
+    aria2c --max-connection-per-server=8 "$SAVE_PATH" "$DOWNLOAD_URL"
 
     if [ $? -eq 0 ]; then
         echo -e "\033[32m✅ 下载成功！正在唤起系统安装程序...\033[0m"
@@ -84,7 +84,7 @@ qq_install() {
 
     echo -e "\033[36m=== 开始多线程下载 QQ 安装包 ===\033[0m"
     echo -e "\033[36m保存路径：$SAVE_PATH\033[0m"
-    aria2c --max-concurrent-downloads=1 --split=10 --progress=yes -o "$SAVE_PATH" "$DOWNLOAD_URL"
+    aria2c --max-connection-per-server=8 "$SAVE_PATH" "$DOWNLOAD_URL"
 
     if [ $? -eq 0 ]; then
         echo -e "\033[32m✅ 下载成功！正在唤起系统安装程序...\033[0m"
@@ -110,7 +110,7 @@ wechat_install() {
 
     echo -e "\033[36m=== 开始多线程下载 微信 安装包 ===\033[0m"
     echo -e "\033[36m保存路径：$SAVE_PATH\033[0m"
-    aria2c --max-concurrent-downloads=1 --split=10 --progress=yes -o "$SAVE_PATH" "$DOWNLOAD_URL"
+    aria2c --max-connection-per-server=8 "$SAVE_PATH" "$DOWNLOAD_URL"
 
     if [ $? -eq 0 ]; then
         echo -e "\033[32m✅ 下载成功！正在唤起系统安装程序...\033[0m"
