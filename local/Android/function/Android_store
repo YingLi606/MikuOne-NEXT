@@ -1,0 +1,126 @@
+android_store() {
+    CHOICE=$(whiptail --clear --backtitle "DaLongZhuaZi" \
+        --title "🐸 Android软件商店（arm64）" \
+        --menu "请选择:" 15 60 4 \
+        1 "💻 ZeroTermux-0.118.3.49" \
+        2 "🐧 QQ" \
+        3 "🍃 微信" \
+        4 "🌚 退出" \
+    3>&1 1>&2 2>&3)
+    
+    case $CHOICE in
+        1)
+            log "ZeroTermux-0.118.3.49"
+            clear
+            echo "您选择了：ZeroTermux-0.118.3.49"
+            sleep 3  # 延迟3秒
+            zerotermux_install
+        ;;
+        2)
+            log "QQ"
+            echo "您选择了：QQ"
+            sleep 3
+            clear
+            qq_install
+        ;;
+        3)
+            log "微信"
+            echo "您选择了：微信"
+            sleep 3
+            clear
+            wechat_install
+        ;;
+        4)
+            log "退出"
+            clear
+            echo "退出"
+            sleep 3
+            clear
+            exit 1
+        ;;
+        *)
+            echo "错误提示：选择了未知选项，请重新进入菜单操作"
+            sleep 3
+            clear
+            exit 1
+        ;;
+    esac
+}
+
+zerotermux_install() {
+    if ! command -v aria2c &> /dev/null; then
+        echo -e "\033[34m检测到未安装aria2c，正在自动安装...\033[0m"
+        pkg install -y aria2 > /dev/null 2>&1
+    fi
+
+    local DOWNLOAD_URL="https://gh.xmly.dev/https://github.com/hanxinhao000/ZeroTermux/releases/download/ZeroTermux-0.118.3.49/ZeroTermux-0.118.3.49-arm64-v8a-debug.apk"
+    local SAVE_PATH="$HOME/ZeroTermux-0.118.3.49-arm64-v8a-debug.apk"
+
+    echo -e "\033[36m=== 开始多线程下载 ZeroTermux 安装包 ===\033[0m"
+    echo -e "\033[36m保存路径：$SAVE_PATH\033[0m"
+    aria2c --max-concurrent-downloads=1 --split=10 --progress=yes -o "$SAVE_PATH" "$DOWNLOAD_URL"
+
+    if [ $? -eq 0 ]; then
+        echo -e "\033[32m✅ 下载成功！正在唤起系统安装程序...\033[0m"
+        echo -e "\033[32m📌 请在弹出窗口完成安装，安装后即可启动ZeroTermux\033[0m"
+        sleep 3
+        am start -a android.intent.action.VIEW -t application/vnd.android.package-archive -d "file://$SAVE_PATH" > /dev/null 2>&1
+    else
+        echo -e "\033[31m❌ 下载失败！5秒后清空终端并退出...\033[0m"
+        sleep 5
+        clear
+        exit 1
+    fi
+}
+
+qq_install() {
+    if ! command -v aria2c &> /dev/null; then
+        echo -e "\033[34m检测到未安装aria2c，正在自动安装...\033[0m"
+        pkg install -y aria2 > /dev/null 2>&1
+    fi
+
+    local DOWNLOAD_URL="https://downv6.ydcdn.tcdnos.com/qqweb/QQ_1/android_apk/Android_9.2.20_64.apk"
+    local SAVE_PATH="$HOME/Android_9.2.20_64.apk"
+
+    echo -e "\033[36m=== 开始多线程下载 QQ 安装包 ===\033[0m"
+    echo -e "\033[36m保存路径：$SAVE_PATH\033[0m"
+    aria2c --max-concurrent-downloads=1 --split=10 --progress=yes -o "$SAVE_PATH" "$DOWNLOAD_URL"
+
+    if [ $? -eq 0 ]; then
+        echo -e "\033[32m✅ 下载成功！正在唤起系统安装程序...\033[0m"
+        echo -e "\033[32m📌 请在弹出窗口完成安装，安装后即可启动QQ\033[0m"
+        sleep 3
+        am start -a android.intent.action.VIEW -t application/vnd.android.package-archive -d "file://$SAVE_PATH" > /dev/null 2>&1
+    else
+        echo -e "\033[31m❌ 下载失败！5秒后清空终端并退出...\033[0m"
+        sleep 5
+        clear
+        exit 1
+    fi
+}
+
+wechat_install() {
+    if ! command -v aria2c &> /dev/null; then
+        echo -e "\033[34m检测到未安装aria2c，正在自动安装...\033[0m"
+        pkg install -y aria2 > /dev/null 2>&1
+    fi
+
+    local DOWNLOAD_URL="https://d2ea0e6d34cd85f42e3e4f2e604513263f41296341d1faae.dlied1.cdntips.net/dldir1v6.qq.com/weixin/android/weixin8064android2940_0x28004033_arm64_1.apk"
+    local SAVE_PATH="$HOME/weixin8064android2940_0x28004033_arm64_1.apk"
+
+    echo -e "\033[36m=== 开始多线程下载 微信 安装包 ===\033[0m"
+    echo -e "\033[36m保存路径：$SAVE_PATH\033[0m"
+    aria2c --max-concurrent-downloads=1 --split=10 --progress=yes -o "$SAVE_PATH" "$DOWNLOAD_URL"
+
+    if [ $? -eq 0 ]; then
+        echo -e "\033[32m✅ 下载成功！正在唤起系统安装程序...\033[0m"
+        echo -e "\033[32m📌 请在弹出窗口完成安装，安装后即可启动微信\033[0m"
+        sleep 3
+        am start -a android.intent.action.VIEW -t application/vnd.android.package-archive -d "file://$SAVE_PATH" > /dev/null 2>&1
+    else
+        echo -e "\033[31m❌ 下载失败！5秒后清空终端并退出...\033[0m"
+        sleep 5
+        clear
+        exit 1
+    fi
+}

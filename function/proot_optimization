@@ -139,7 +139,7 @@ sleep 2
 clear
 
 if [ $whiptail_available -eq 1 ]; then
-    whiptail --title "是否安装MikuOne？" --yesno "是否需要安装MikuOne？该工具用于很大用途" 10 60
+    whiptail --title "是否安装MikuOne？" --yesno "是否需要安装MikuOne？该工具可用于很大用途" 10 60
     if [ $? -eq 0 ]; then
         echo -e "${SUSSEC} 用户选择安装MikuOne，正在克隆仓库...${RES}"
         git clone https://dl.gancmcs.top/https://github.com/YingLi606/MikuOne.git

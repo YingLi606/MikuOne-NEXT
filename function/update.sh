@@ -107,7 +107,7 @@ if [ "$(printf '%s\n' "$REMOTE_VERSION" "$LOCAL_VERSION" | sort -V | tail -n1)" 
 		Modify_the_variable qqBot ${qqBot} ${HOME}/MikuOne-NEXT/config/config.sh
 	fi
 	chmod 777 ${HOME}/MikuOne-NEXT/mikunext.sh
-	echo "更新完成！将在3秒后重启脚本...当前版本: $REMOTE_VERSION"
+	echo "更新完成！重启后请在我主单里退出脚本且重新启动选择默认安装源！将在3秒后重启脚本...当前版本: $REMOTE_VERSION"
 	log 更新成功
 	# 倒计时3秒后重启脚本，最后清空终端
 	sleep 1

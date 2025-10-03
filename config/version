@@ -1,5 +1,5 @@
 {
-    "version": "1.1.0",
+    "version": "1.1.5",
     "git_clone": "YingLi606/MikuOne-NEXT",
-    "description": "'增加了副本协议"
+    "description": "'新增了Android应用商店（公测）"
 }

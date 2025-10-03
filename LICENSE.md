@@ -69,6 +69,7 @@
 ### **英文版本 (English Version)**
 
 **Copyright Notice**
+Original Copyright Statement:
 Copyright © 2025 Mit_gancm (hereinafter referred to as the "Licensor"). All rights reserved.
 This software is based on Mit_gancm The original software is licensed as modified, and a license agreement for the original software ( v1.0.1 Copyright Notice License Agreement ) has been provided with a copy of this software.
 

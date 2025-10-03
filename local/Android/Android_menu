@@ -37,11 +37,12 @@ start)
 	;;
 *)
 	Android_menu=$(
-		whiptail --title "MikuOne-NEXT V1.1.0" --menu "请选择功能" 15 60 8 \
-			"1" "管理proot容器" \
-			"2" "垃圾清理" \
-			"0" "退出" \
-			"D" "debuger"  3>&1 1>&2 2>&3
+		whiptail --title "MikuOne-NEXT V1.1.5" --menu "请选择功能" 15 60 8 \
+			"1" "🍀 管理proot容器" \
+			"2" "🤓 垃圾清理" \
+			"3" "🐸 Android软件商店（公测）" \
+			"0" "🌚 退出" \
+			"D" "⛳️ debuger"  3>&1 1>&2 2>&3
 	)
 	case $Android_menu in
 	1)
@@ -76,6 +77,10 @@ start)
 		log "垃圾清理"
 		garbage_collection
 		;;
+	3)
+		log "Android软件商店"
+		android_store
+		;;	
 	D)
 		debuger
 		;;
