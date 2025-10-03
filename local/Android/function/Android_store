@@ -62,7 +62,7 @@ zerotermux_install() {
 
     echo -e "\033[36m=== 开始多线程下载 ZeroTermux 安装包 ===\033[0m"
     echo -e "\033[36m保存路径：$SAVE_PATH\033[0m"
-    aria2c --max-connection-per-server=8 "$SAVE_PATH" "$DOWNLOAD_URL"
+    aria2c --max-connection-per-server=8 "$DOWNLOAD_URL" -o "$SAVE_PATH"
 
     if [ $? -eq 0 ]; then
         echo -e "\033[32m✅ 下载成功！正在唤起系统安装程序...\033[0m"
@@ -83,12 +83,16 @@ qq_install() {
         pkg install -y aria2 > /dev/null 2>&1
     fi
 
+    echo -e "\033[36m📂 正在创建"app"文件夹（用于存放安装包）...\033[0m"
+    sleep 3
+    mkdir -p "$HOME/app"
+    
     local DOWNLOAD_URL="https://downv6.ydcdn.tcdnos.com/qqweb/QQ_1/android_apk/Android_9.2.20_64.apk"
     local SAVE_PATH="$HOME/app/Android_9.2.20_64.apk"
 
     echo -e "\033[36m=== 开始多线程下载 QQ 安装包 ===\033[0m"
     echo -e "\033[36m保存路径：$SAVE_PATH\033[0m"
-    aria2c --max-connection-per-server=8 "$SAVE_PATH" "$DOWNLOAD_URL"
+    aria2c --max-connection-per-server=8 "$DOWNLOAD_URL" -o "$SAVE_PATH"
 
     if [ $? -eq 0 ]; then
         echo -e "\033[32m✅ 下载成功！正在唤起系统安装程序...\033[0m"
@@ -109,12 +113,16 @@ wechat_install() {
         pkg install -y aria2 > /dev/null 2>&1
     fi
 
+    echo -e "\033[36m📂 正在创建"app"文件夹（用于存放安装包）...\033[0m"
+    sleep 3
+    mkdir -p "$HOME/app"
+    
     local DOWNLOAD_URL="https://d2ea0e6d34cd85f42e3e4f2e604513263f41296341d1faae.dlied1.cdntips.net/dldir1v6.qq.com/weixin/android/weixin8064android2940_0x28004033_arm64_1.apk"
     local SAVE_PATH="$HOME/app/weixin8064android2940_0x28004033_arm64_1.apk"
 
     echo -e "\033[36m=== 开始多线程下载 微信 安装包 ===\033[0m"
     echo -e "\033[36m保存路径：$SAVE_PATH\033[0m"
-    aria2c --max-connection-per-server=8 "$SAVE_PATH" "$DOWNLOAD_URL"
+    aria2c --max-connection-per-server=8 "$DOWNLOAD_URL" -o "$SAVE_PATH"
 
     if [ $? -eq 0 ]; then
         echo -e "\033[32m✅ 下载成功！正在唤起系统安装程序...\033[0m"

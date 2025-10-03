@@ -1,30 +1,40 @@
 garbage_collection() {
+    # 定义需要处理的目录列表
     target_dir="${HOME}/MikuOne-NEXT/download"
-    
-    if [ ! -d "$target_dir" ]; then
-        echo -e "${WORRY}目标目录 $target_dir 不存在，无需删除。"
-        log "目标目录 $target_dir 不存在，删除操作跳过。"
-        return 1
-    fi
+    app_dir="${HOME}/app"
+    directories=("$target_dir" "$app_dir")
 
-    echo -e "${INFO}当前 ${target_dir} 目录下的内容："
-    ls -la "$target_dir"
-
-    read -e -p "你要删除该目录下的所有文件吗？（删除后将无法找回，请慎重考虑）[Y/n]: " delete_files
-    delete_files=${delete_files:-n}
-
-    if [[ "$delete_files" =~ ^[Yy]$ ]]; then
-        find "$target_dir" -mindepth 1 -delete
-        
-        if [ -z "$(ls -A "$target_dir")" ]; then
-            echo -e "${SUSSEC}${target_dir} 目录下所有文件已成功删除。"
-            log "${target_dir} 目录下所有文件已成功删除。"
-        else
-            echo -e "${ERROR}${target_dir} 目录下文件删除失败，部分文件可能残留。"
-            log "${target_dir} 目录下文件删除失败，部分文件可能残留。"
+    for dir in "${directories[@]}"; do
+        # 检查目录是否存在
+        if [ ! -d "$dir" ]; then
+            echo -e "${WORRY}目标目录 $dir 不存在，无需删除。"
+            log "目标目录 $dir 不存在，删除操作跳过。"
+            continue
         fi
-    else
-        echo -e "${INFO}已取消删除操作，${target_dir} 目录下文件保持不变。"
-        log "已取消删除操作，${target_dir} 目录下文件保持不变。"
-    fi
+
+        # 列出目录内容
+        echo -e "${INFO}当前 ${dir} 目录下的内容："
+        ls -la "$dir"
+
+        # 询问是否删除当前目录下的文件
+        read -e -p "你要删除 ${dir} 目录下的所有文件吗？（删除后将无法找回，请慎重考虑）[Y/n]: " delete_files
+        delete_files=${delete_files:-n}
+
+        if [[ "$delete_files" =~ ^[Yy]$ ]]; then
+            # 执行删除操作
+            find "$dir" -mindepth 1 -delete
+            
+            # 验证删除结果
+            if [ -z "$(ls -A "$dir")" ]; then
+                echo -e "${SUSSEC}${dir} 目录下所有文件已成功删除。"
+                log "${dir} 目录下所有文件已成功删除。"
+            else
+                echo -e "${ERROR}${dir} 目录下文件删除失败，部分文件可能残留。"
+                log "${dir} 目录下文件删除失败，部分文件可能残留。"
+            fi
+        else
+            echo -e "${INFO}已取消 ${dir} 目录的删除操作，该目录下文件保持不变。"
+            log "已取消 ${dir} 目录的删除操作，该目录下文件保持不变。"
+        fi
+    done
 }
