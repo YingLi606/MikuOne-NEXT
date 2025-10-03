@@ -1,5 +1,5 @@
 {
-    "version": "1.1.6",
+    "version": "1.1.7",
     "git_clone": "YingLi606/MikuOne-NEXT",
     "description": "'修复了aria2c无法使用多进程下载问题"
 }

@@ -44,7 +44,7 @@ startNapCatQQB | startnQQB)
 	fi
 
 	Linux_menu=$(
-		whiptail --title "MikuOne-NEXT V1.1.6" --menu "请选择功能" 15 60 4 \
+		whiptail --title "MikuOne-NEXT V1.1.7" --menu "请选择功能" 15 60 4 \
 			"1" "管理mc Server" \
 			"2" "QQ机器人" \
 			"0" "退出" \

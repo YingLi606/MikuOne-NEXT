@@ -52,9 +52,13 @@ zerotermux_install() {
         echo -e "\033[34m检测到未安装aria2c，正在自动安装...\033[0m"
         pkg install -y aria2 > /dev/null 2>&1
     fi
-
+   
+    echo -e "\033[36m📂 正在创建"app"文件夹（用于存放安装包）...\033[0m"
+    sleep 3
+    mkdir -p "$HOME/app"
+    
     local DOWNLOAD_URL="https://gh.xmly.dev/https://github.com/hanxinhao000/ZeroTermux/releases/download/ZeroTermux-0.118.3.49/ZeroTermux-0.118.3.49-arm64-v8a-debug.apk"
-    local SAVE_PATH="$HOME/ZeroTermux-0.118.3.49-arm64-v8a-debug.apk"
+    local SAVE_PATH="$HOME/app/ZeroTermux-0.118.3.49-arm64-v8a-debug.apk"
 
     echo -e "\033[36m=== 开始多线程下载 ZeroTermux 安装包 ===\033[0m"
     echo -e "\033[36m保存路径：$SAVE_PATH\033[0m"
@@ -62,7 +66,7 @@ zerotermux_install() {
 
     if [ $? -eq 0 ]; then
         echo -e "\033[32m✅ 下载成功！正在唤起系统安装程序...\033[0m"
-        echo -e "\033[32m📌 请在弹出窗口完成安装，安装后即可启动ZeroTermux\033[0m"
+        echo -e "\033[32m📌 请在弹出窗口完成安装，安装后即可启动ZeroTermux，安装成功后请及时从文件夹里手动删除安装包\033[0m"
         sleep 3
         am start -a android.intent.action.VIEW -t application/vnd.android.package-archive -d "file://$SAVE_PATH" > /dev/null 2>&1
     else
@@ -80,7 +84,7 @@ qq_install() {
     fi
 
     local DOWNLOAD_URL="https://downv6.ydcdn.tcdnos.com/qqweb/QQ_1/android_apk/Android_9.2.20_64.apk"
-    local SAVE_PATH="$HOME/Android_9.2.20_64.apk"
+    local SAVE_PATH="$HOME/app/Android_9.2.20_64.apk"
 
     echo -e "\033[36m=== 开始多线程下载 QQ 安装包 ===\033[0m"
     echo -e "\033[36m保存路径：$SAVE_PATH\033[0m"
@@ -88,7 +92,7 @@ qq_install() {
 
     if [ $? -eq 0 ]; then
         echo -e "\033[32m✅ 下载成功！正在唤起系统安装程序...\033[0m"
-        echo -e "\033[32m📌 请在弹出窗口完成安装，安装后即可启动QQ\033[0m"
+        echo -e "\033[32m📌 请在弹出窗口完成安装，安装后即可启动QQ，安装成功后请及时从文件夹里手动删除安装包\\033[0m"
         sleep 3
         am start -a android.intent.action.VIEW -t application/vnd.android.package-archive -d "file://$SAVE_PATH" > /dev/null 2>&1
     else
@@ -106,7 +110,7 @@ wechat_install() {
     fi
 
     local DOWNLOAD_URL="https://d2ea0e6d34cd85f42e3e4f2e604513263f41296341d1faae.dlied1.cdntips.net/dldir1v6.qq.com/weixin/android/weixin8064android2940_0x28004033_arm64_1.apk"
-    local SAVE_PATH="$HOME/weixin8064android2940_0x28004033_arm64_1.apk"
+    local SAVE_PATH="$HOME/app/weixin8064android2940_0x28004033_arm64_1.apk"
 
     echo -e "\033[36m=== 开始多线程下载 微信 安装包 ===\033[0m"
     echo -e "\033[36m保存路径：$SAVE_PATH\033[0m"
@@ -114,7 +118,7 @@ wechat_install() {
 
     if [ $? -eq 0 ]; then
         echo -e "\033[32m✅ 下载成功！正在唤起系统安装程序...\033[0m"
-        echo -e "\033[32m📌 请在弹出窗口完成安装，安装后即可启动微信\033[0m"
+        echo -e "\033[32m📌 请在弹出窗口完成安装，安装后即可启动微信，安装成功后请及时从文件夹里手动删除安装包\\033[0m"
         sleep 3
         am start -a android.intent.action.VIEW -t application/vnd.android.package-archive -d "file://$SAVE_PATH" > /dev/null 2>&1
     else
