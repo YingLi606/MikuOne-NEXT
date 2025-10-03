@@ -1,5 +1,5 @@
 {
-    "version": "1.2.0-f2",
+    "version": "1.2.1",
     "git_clone": "YingLi606/MikuOne-NEXT",
-    "description": "'修复了aria2c无法使用多进程下载问题"
+    "description": "'修复无法弹窗安装器的问题"
 }

@@ -13,7 +13,7 @@ android_store() {
             log "ZeroTermux-0.118.3.49"
             clear
             echo "您选择了：ZeroTermux-0.118.3.49"
-            sleep 3  # 延迟3秒
+            sleep 3  
             zerotermux_install
         ;;
         2)
@@ -53,20 +53,18 @@ zerotermux_install() {
         pkg install -y aria2 > /dev/null 2>&1
     fi
    
-    echo -e "\033[36m📂 正在创建"app"文件夹（用于存放安装包）...\033[0m"
-    sleep 3
-    mkdir -p "${HOME}/MikuOne-NEXT/app"
+    termux-setup-storage
     
     local DOWNLOAD_URL="https://gh.xmly.dev/https://github.com/hanxinhao000/ZeroTermux/releases/download/ZeroTermux-0.118.3.49/ZeroTermux-0.118.3.49-arm64-v8a-debug.apk"
-    local SAVE_PATH="MikuOne-NEXT/app/ZeroTermux-0.118.3.49-arm64-v8a-debug.apk"
+    local SAVE_PATH="storage/downloads/ZeroTermux-0.118.3.49-arm64-v8a-debug.apk"
 
     echo -e "\033[36m=== 开始多线程下载 ZeroTermux 安装包 ===\033[0m"
     echo -e "\033[36m保存路径：$SAVE_PATH\033[0m"
     aria2c --max-connection-per-server=8 "$DOWNLOAD_URL" -o "$SAVE_PATH"
 
     if [ $? -eq 0 ]; then
-        echo -e "\033[32m✅ 下载成功！正在唤起系统安装程序...\033[0m"
-        echo -e "\033[32m📌 请在弹出窗口完成安装，安装后即可启动ZeroTermux，安装成功后请及时从文件夹里手动删除安装包\033[0m"
+        echo -e "\033[32m✅ 下载成功！正在唤起系统安装程序...（如果没有，可借助MT等工具）\033[0m"
+        echo -e "\033[32m📌请在弹出窗口完成安装，安装后即可启动微信，安装成功后请及时从脚本主页里“垃圾清理”进行删除\033[0m"
         sleep 3
         am start -a android.intent.action.VIEW -t application/vnd.android.package-archive -d "file://$SAVE_PATH" > /dev/null 2>&1
     else
@@ -83,20 +81,18 @@ qq_install() {
         pkg install -y aria2 > /dev/null 2>&1
     fi
 
-    echo -e "\033[36m📂 正在创建"app"文件夹（用于存放安装包）...\033[0m"
-    sleep 3
-    mkdir -p "${HOME}/MikuOne-NEXT/app"
+    termux-setup-storage
     
     local DOWNLOAD_URL="https://downv6.ydcdn.tcdnos.com/qqweb/QQ_1/android_apk/Android_9.2.20_64.apk"
-    local SAVE_PATH="MikuOne-NEXT/app/Android_9.2.20_64.apk"
+    local SAVE_PATH="storage/downloads/Android_9.2.20_64.apk"
 
     echo -e "\033[36m=== 开始多线程下载 QQ 安装包 ===\033[0m"
     echo -e "\033[36m保存路径：$SAVE_PATH\033[0m"
     aria2c --max-connection-per-server=8 "$DOWNLOAD_URL" -o "$SAVE_PATH"
 
     if [ $? -eq 0 ]; then
-        echo -e "\033[32m✅ 下载成功！正在唤起系统安装程序...\033[0m"
-        echo -e "\033[32m📌 请在弹出窗口完成安装，安装后即可启动QQ，安装成功后请及时从文件夹里手动删除安装包\\033[0m"
+        echo -e "\033[32m✅ 下载成功！正在唤起系统安装程序...（如果没有，可借助MT等工具）\033[0m"
+        echo -e "\033[32m📌 请在弹出窗口完成安装，安装后即可启动微信，安装成功后请及时从脚本主页里“垃圾清理”进行删除\\033[0m"
         sleep 3
         am start -a android.intent.action.VIEW -t application/vnd.android.package-archive -d "file://$SAVE_PATH" > /dev/null 2>&1
     else
@@ -113,20 +109,18 @@ wechat_install() {
         pkg install -y aria2 > /dev/null 2>&1
     fi
 
-    echo -e "\033[36m📂 正在创建"app"文件夹（用于存放安装包）...\033[0m"
-    sleep 3
-    mkdir -p "${HOME}/MikuOne-NEXT/app"
+    termux-setup-storage
     
     local DOWNLOAD_URL="https://d2ea0e6d34cd85f42e3e4f2e604513263f41296341d1faae.dlied1.cdntips.net/dldir1v6.qq.com/weixin/android/weixin8064android2940_0x28004033_arm64_1.apk"
-    local SAVE_PATH="MikuOne-NEXT/app/weixin8064android2940_0x28004033_arm64_1.apk"
+    local SAVE_PATH="storage/downloads/weixin8064android2940_0x28004033_arm64_1.apk"
 
     echo -e "\033[36m=== 开始多线程下载 微信 安装包 ===\033[0m"
     echo -e "\033[36m保存路径：$SAVE_PATH\033[0m"
     aria2c --max-connection-per-server=8 "$DOWNLOAD_URL" -o "$SAVE_PATH"
 
     if [ $? -eq 0 ]; then
-        echo -e "\033[32m✅ 下载成功！正在唤起系统安装程序...\033[0m"
-        echo -e "\033[32m📌 请在弹出窗口完成安装，安装后即可启动微信，安装成功后请及时从文件夹里手动删除安装包\\033[0m"
+        echo -e "\033[32m✅ 下载成功！正在唤起系统安装程序...（如果没有，可借助MT等工具）\033[0m"
+        echo -e "\033[32m📌 请在弹出窗口完成安装，安装后即可启动微信，安装成功后请及时从脚本主页里“垃圾清理”进行删除\\033[0m"
         sleep 3
         am start -a android.intent.action.VIEW -t application/vnd.android.package-archive -d "file://$SAVE_PATH" > /dev/null 2>&1
     else

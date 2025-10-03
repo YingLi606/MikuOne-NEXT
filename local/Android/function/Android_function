@@ -1,7 +1,7 @@
 garbage_collection() {
     # 定义需要处理的目录列表
     target_dir="${HOME}/MikuOne-NEXT/download"
-    app_dir="${HOME}/MikuOne-NEXT/app"
+    app_dir="${HOME}/storage/downloads"
     directories=("$target_dir" "$app_dir")
 
     for dir in "${directories[@]}"; do
