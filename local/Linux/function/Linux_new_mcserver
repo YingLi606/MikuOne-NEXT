@@ -1,26 +1,25 @@
-SUPPORTED_DISTROS=("Ubuntu" "Kali" "Debian" "GXDE" "Deepin" "UOS")
-DISTRO=$(lsb_release -is 2>/dev/null)
-if [[ ! " ${SUPPORTED_DISTROS[@]} " =~ " ${DISTRO} " ]]; then
-    echo -e "\033[91m[错误] 未适配当前系统（${DISTRO}），仅支持Ubuntu/Kali/Debian/GXDE/Deepin/UOS\033[0m"
-    sleep 5
-    clear
-    exit 1
-fi
-
-if ! command -v whiptail &> /dev/null; then
-    echo -e "\033[93m[提示] 检测到whiptail未安装，正在自动安装...\033[0m"
-    sudo apt update -y >/dev/null 2>&1
-    sudo apt install -y whiptail >/dev/null 2>&1
-    if command -v whiptail &> /dev/null; then
-        echo -e "\033[92m[成功] whiptail安装完成\033[0m"
-    else
-        echo -e "\033[91m[错误] whiptail安装失败，请手动执行'sudo apt install whiptail'后重试\033[0m"
+#!/bin/bash
+install_MC_SERVER_MENU_NEW() {
+    SUPPORTED_DISTROS=("Ubuntu" "Kali" "Debian" "GXDE" "Deepin" "UOS")
+    DISTRO=$(lsb_release -is 2>/dev/null)
+    if [[ ! " ${SUPPORTED_DISTROS[@]} " =~ " ${DISTRO} " ]]; then
+        echo -e "\033[91m[错误] 未适配当前系统（${DISTRO}），仅支持Ubuntu/Kali/Debian/GXDE/Deepin/UOS\033[0m"
+        sleep 5
+        clear
         exit 1
     fi
-fi
 
-install_MC_SERVER_MENU_NEW() {
-    echo -e "\033[94m即将启动MC服务器管理脚本！\033[0m"
+    if ! command -v whiptail &> /dev/null; then
+        echo -e "\033[93m[提示] 检测到whiptail未安装，正在自动安装...\033[0m"
+        sudo apt update -y >/dev/null 2>&1
+        sudo apt install -y whiptail >/dev/null 2>&1
+        if command -v whiptail &> /dev/null; then
+            echo -e "\033[92m[成功] whiptail安装完成\033[0m"
+        else
+            echo -e "\033[91m[错误] whiptail安装失败，请手动执行'sudo apt install whiptail'后重试\033[0m"
+            exit 1
+        fi
+    fi
 
     HEIGHT=15
     WIDTH=40
@@ -50,12 +49,9 @@ install_MC_SERVER_MENU_NEW() {
         clear
         case $CHOICE in
                 "Fabric核心")
-                echo -e "\033[92m**请在五秒等待期间认真阅读一下文字**\033[0m"
-                echo -e "\033[95mbug反馈加QQ1706491377\033[0m"
-                echo -e "\033[95mB站搜爱做视频のJack_Eason\033[0m"
-                echo -e "\033[95m最终解释权归B站爱做视频のJack_Eason所有\033[0m"
+                echo -e "\033[92m**请在6秒等待期间认真阅读一下文字**\033[0m"
                 echo -e "\033[92mFabric核心需要完整开机并关机两次才可配置完成，此时方可进入服务器，以后会进一步优化\033[0m"
-                sleep 5
+                sleep 6
                 HEIGHT=15
                 WIDTH=40
                 CHOICE_HEIGHT=4
@@ -486,5 +482,3 @@ install_MC_SERVER_MENU_NEW() {
             ;;
     esac
 }
-
-install_MC_SERVER_MENU_NEW
