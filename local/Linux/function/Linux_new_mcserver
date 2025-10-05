@@ -1,0 +1,490 @@
+SUPPORTED_DISTROS=("Ubuntu" "Kali" "Debian" "GXDE" "Deepin" "UOS")
+DISTRO=$(lsb_release -is 2>/dev/null)
+if [[ ! " ${SUPPORTED_DISTROS[@]} " =~ " ${DISTRO} " ]]; then
+    echo -e "\033[91m[错误] 未适配当前系统（${DISTRO}），仅支持Ubuntu/Kali/Debian/GXDE/Deepin/UOS\033[0m"
+    sleep 5
+    clear
+    exit 1
+fi
+
+if ! command -v whiptail &> /dev/null; then
+    echo -e "\033[93m[提示] 检测到whiptail未安装，正在自动安装...\033[0m"
+    sudo apt update -y >/dev/null 2>&1
+    sudo apt install -y whiptail >/dev/null 2>&1
+    if command -v whiptail &> /dev/null; then
+        echo -e "\033[92m[成功] whiptail安装完成\033[0m"
+    else
+        echo -e "\033[91m[错误] whiptail安装失败，请手动执行'sudo apt install whiptail'后重试\033[0m"
+        exit 1
+    fi
+fi
+
+install_MC_SERVER_MENU_NEW() {
+    echo -e "\033[94m即将启动MC服务器管理脚本！\033[0m"
+
+    HEIGHT=15
+    WIDTH=40
+    CHOICE_HEIGHT=4
+    BACKTITLE="MC服务器管理（新）"
+    TITLE="新的mc服务器管理界面"
+    MENU="请选择要执行的操作"
+ 
+    OPTIONS=("安装/启动" "卸载" "查看启动日志" "清理启动日志" "退出")
+ 
+    CHOICE=$(whiptail --clear --backtitle "$BACKTITLE" --title "$TITLE" --menu "$MENU" $HEIGHT $WIDTH $CHOICE_HEIGHT "${OPTIONS[@]}" 2>&1 >/dev/tty)
+ 
+    clear
+    case $CHOICE in
+            "安装/启动")
+        HEIGHT=15
+        WIDTH=40
+        CHOICE_HEIGHT=4
+        BACKTITLE="MC服务器管理（新）"
+        TITLE="新的mc服务器管理界面"
+        MENU="选择需要安装的核心"
+ 
+        OPTIONS=("Fabric核心" "Paper核心" "Spigot核心" "退出")
+ 
+        CHOICE=$(whiptail --clear --backtitle "$BACKTITLE" --title "$TITLE" --menu "$MENU" $HEIGHT $WIDTH $CHOICE_HEIGHT "${OPTIONS[@]}" 2>&1 >/dev/tty)
+ 
+        clear
+        case $CHOICE in
+                "Fabric核心")
+                echo -e "\033[92m**请在五秒等待期间认真阅读一下文字**\033[0m"
+                echo -e "\033[95mbug反馈加QQ1706491377\033[0m"
+                echo -e "\033[95mB站搜爱做视频のJack_Eason\033[0m"
+                echo -e "\033[95m最终解释权归B站爱做视频のJack_Eason所有\033[0m"
+                echo -e "\033[92mFabric核心需要完整开机并关机两次才可配置完成，此时方可进入服务器，以后会进一步优化\033[0m"
+                sleep 5
+                HEIGHT=15
+                WIDTH=40
+                CHOICE_HEIGHT=4
+                BACKTITLE="B站JE"
+                TITLE="安装/启动"
+                MENU="选择版本"
+ 
+                OPTIONS=("JE1.20.1+BE1.20.3" "JE1.20.2+BE1.20.5" "退出")
+ 
+                CHOICE=$(whiptail --clear --backtitle "$BACKTITLE" --title "$TITLE" --menu "$MENU" $HEIGHT $WIDTH $CHOICE_HEIGHT "${OPTIONS[@]}" 2>&1 >/dev/tty)
+ 
+                clear
+                case $CHOICE in
+                        "JE1.20.1+BE1.20.3")
+                if [ -e "$HOME/MC/start.txt" ];then
+                    sudo sed -i 's/eula=false/eula=true/g' "$HOME/MC/eula.txt"
+                    sudo sed -i 's/auth-type: online/auth-type: offline/g' "$HOME/MC/plugins/Geyser-Fabric/config.yml"
+                    sudo sed -i 's/online-mode=true/online-mode=false/g' "$HOME/MC/server.properties"
+                    if [ -e "$HOME/MC/mods/fabric-api-0.92.2+1.20.1.jar" ];then
+                             echo -e "\033[92m此文件已经准备好\033[0m"
+                    else
+                             echo -e "\033[92m此文件未准备，正在准备\033[0m"
+                             sudo mv fabric-api-0.92.2+1.20.1.jar "$HOME/MC/mods/"
+                             echo -e "\033[92m文件已经准备好\033[0m"
+                    fi
+                    if [ -e "$HOME/MC/mods/geyser-fabric-2.2.0-SNAPSHOT+build.317.jar" ];then
+                             echo -e "\033[92m此文件已经准备好\033[0m"
+                    else
+                             echo -e "\033[92m此文件未准备，正在准备\033[0m"
+                             sudo mv geyser-fabric-2.2.0-SNAPSHOT+build.317.jar "$HOME/MC/mods/"
+                             echo -e "\033[92m文件已经准备好\033[0m"
+                    fi
+                else
+                    sudo mkdir -p "$HOME/MC"
+                    sudo touch "$HOME/MC/start.txt"
+                    echo -e "\033[92m正在开始下载服务端\033[0m"
+                    wget https://meta.fabricmc.net/v2/versions/loader/1.20.1/0.15.11/1.0.1/server/jar
+                    sudo mv jar "$HOME/MC/server.jar"
+                    echo -e "\033[92m正在开始下载Geyser\033[0m"
+                    wget https://cdn.modrinth.com/data/wKkoqHrH/versions/sxF4OIVL/geyser-fabric-2.2.0-SNAPSHOT%2Bbuild.317.jar
+                    echo -e "\033[92m正在开始下载Fabric API\033[0m"
+                    wget https://cdn.modrinth.com/data/P7dR8mSH/versions/P7uGFii0/fabric-api-0.92.2%2B1.20.1.jar
+                    echo -e "\033[92m即将启动服务器\033[0m"
+                fi
+                echo -e "\033[92m正在验证java是否安装\033[0m"
+                java -version
+                if [ $? -eq 0 ]; then
+                        echo -e "\033[92mJava已经安装\033[0m"
+                        java_version=$(java -version 2>&1 | sed '1!d' | sed -e 's/"//g' | awk '{print $3}')
+                        v=${java_version%%.*}
+                        if [[ $v == *"21"* ]]; then
+                                 cd "$HOME/MC/"
+                                 whiptail --title "启动提示" --msgbox "服务器正在启动，启动日志将保存至：\n$HOME/MC/server.log\n启动完成后可通过日志查看运行状态。" 12 60
+                                 java -jar server.jar nogui >> "$HOME/MC/server.log" 2>&1
+                        else
+                                java_version=$(java -version 2>&1 | sed '1!d' | sed -e 's/"//g' | awk '{print $3}')
+                                v=${java_version%%.*}
+                                echo -e "\033[92mJava版本为$v\033[0m"
+                                sleep 2.5
+                                HEIGHT=15
+                                WIDTH=40
+                                CHOICE_HEIGHT=4
+                                BACKTITLE="MC服务器管理（新）"
+                                TITLE="请慎重确认"
+                                MENU="确认Java版本"
+ 
+                                OPTIONS=("Java版本为21及以上" "Java版本为21以下" "退出")
+ 
+                                CHOICE=$(whiptail --clear --backtitle "$BACKTITLE" --title "$TITLE" --menu "$MENU" $HEIGHT $WIDTH $CHOICE_HEIGHT "${OPTIONS[@]}" 2>&1 >/dev/tty)
+                                clear
+                                case $CHOICE in
+                                "Java版本为21及以上")
+                                        cd "$HOME/MC/"
+                                        whiptail --title "启动提示" --msgbox "服务器正在启动，启动日志将保存至：\n$HOME/MC/server.log\n启动完成后可通过日志查看运行状态。" 12 60
+                                        java -jar server.jar nogui >> "$HOME/MC/server.log" 2>&1
+                                ;;
+                                "Java版本为21以下")
+                                sudo apt update
+                                        sudo apt install openjdk-21-jdk -y
+                                        cd "$HOME/MC/"
+                                        whiptail --title "启动提示" --msgbox "服务器正在启动，启动日志将保存至：\n$HOME/MC/server.log\n启动完成后可通过日志查看运行状态。" 12 60
+                                        java -jar server.jar nogui >> "$HOME/MC/server.log" 2>&1
+                                ;;
+                                "退出")
+                                exit
+                                ;;
+                                esac
+                        fi
+                else
+                        echo -e "\033[92m检测未安装Java，正在安装，安装完成后将启动服务器\033[0m"
+                        sudo apt update
+                        sudo apt install openjdk-21-jdk -y
+                        cd "$HOME/MC/"
+                        whiptail --title "启动提示" --msgbox "服务器正在启动，启动日志将保存至：\n$HOME/MC/server.log\n启动完成后可通过日志查看运行状态。" 12 60
+                        java -jar server.jar nogui >> "$HOME/MC/server.log" 2>&1
+                fi
+                            ;;
+                       "JE1.20.2+BE1.20.5")
+                           if [ -e "$HOME/MC/start.txt" ];then
+                               sudo sed -i 's/eula=false/eula=true/g' "$HOME/MC/eula.txt"
+                               sudo sed -i 's/auth-type: online/auth-type: offline/g' "$HOME/MC/config/Geyser-Fabric/config.yml"
+                               sudo sed -i 's/online-mode=true/online-mode=false/g' "$HOME/MC/server.properties"
+                               if [ -e "$HOME/MC/mods/fabric-api-0.91.6+1.20.2.jar" ];then
+                                        echo -e "\033[92m此文件已经准备好\033[0m"
+                               else
+                                        echo -e "\033[92m此文件未准备，正在准备\033[0m"
+                                        sudo mv fabric-api-0.91.6+1.20.2.jar "$HOME/MC/mods/"
+                                        echo -e "\033[92m文件已经准备好\033[0m"
+                               fi
+                               if [ -e "$HOME/MC/mods/geyser-fabric-2.2.0-SNAPSHOT+build.393.jar" ];then
+                                        echo -e "\033[92m此文件已经准备好\033[0m"
+                               else
+                                        echo -e "\033[92m此文件未准备，正在准备\033[0m"
+                                        sudo mv geyser-fabric-2.2.0-SNAPSHOT+build.393.jar "$HOME/MC/mods/"
+                                        echo -e "\033[92m文件已经准备好\033[0m"
+                               fi
+                           else
+                               sudo touch "$HOME/MC/start.txt"
+                               sudo mkdir -p "$HOME/MC"
+                               echo -e "\033[92m正在开始下载服务端\033[0m"
+                               wget https://meta.fabricmc.net/v2/versions/loader/1.20.2/0.15.11/1.0.1/server/jar
+                               sudo mv jar "$HOME/MC/server.jar"
+                               echo -e "\033[92m正在开始下载Geyser\033[0m"
+                               wget https://cdn.modrinth.com/data/wKkoqHrH/versions/e8NbdxCH/geyser-fabric-2.2.0-SNAPSHOT%2Bbuild.393.jar
+                               echo -e "\033[92m正在开始下载Fabric API\033[0m"
+                               wget https://cdn.modrinth.com/data/P7dR8mSH/versions/8GVp7wDk/fabric-api-0.91.6%2B1.20.2.jar
+                               echo -e "\033[92m即将启动服务器\033[0m"
+                           fi
+                           echo -e "\033[92m正在验证java是否安装\033[0m"
+                           java -version
+                           if [ $? -eq 0 ]; then
+                                   echo -e "\033[92mJava已经安装\033[0m"
+                                   java_version=$(java -version 2>&1 | sed '1!d' | sed -e 's/"//g' | awk '{print $3}')
+                                   v=${java_version%%.*}
+                                   if [[ $v == *"21"* ]]; then
+                                            cd "$HOME/MC/"
+                                            whiptail --title "启动提示" --msgbox "服务器正在启动，启动日志将保存至：\n$HOME/MC/server.log\n启动完成后可通过日志查看运行状态。" 12 60
+                                            java -jar server.jar nogui >> "$HOME/MC/server.log" 2>&1
+                                   else
+                                            java_version=$(java -version 2>&1 | sed '1!d' | sed -e 's/"//g' | awk '{print $3}')
+                                            v=${java_version%%.*}
+                                            echo -e "\033[92mJava版本为$v\033[0m"
+                                            sleep 2.5
+                                            HEIGHT=15
+                                            WIDTH=40
+                                            CHOICE_HEIGHT=4
+                                            BACKTITLE="MC服务器管理（新）"
+                                            TITLE="请慎重确认"
+                                            MENU="确认Java版本"
+ 
+                                            OPTIONS=("Java版本为21及以上" "Java版本为21以下" "退出")
+ 
+                                            CHOICE=$(whiptail --clear --backtitle "$BACKTITLE" --title "$TITLE" --menu "$MENU" $HEIGHT $WIDTH $CHOICE_HEIGHT "${OPTIONS[@]}" 2>&1 >/dev/tty)
+                                            clear
+                                            case $CHOICE in
+                                            "Java版本为21及以上")
+                                                    cd "$HOME/MC/"
+                                                    whiptail --title "启动提示" --msgbox "服务器正在启动，启动日志将保存至：\n$HOME/MC/server.log\n启动完成后可通过日志查看运行状态。" 12 60
+                                                    java -jar server.jar nogui >> "$HOME/MC/server.log" 2>&1
+                                            ;;
+                                            "Java版本为21以下")
+                                            sudo apt update
+                                                    sudo apt install openjdk-21-jdk -y
+                                                    cd "$HOME/MC/"
+                                                    whiptail --title "启动提示" --msgbox "服务器正在启动，启动日志将保存至：\n$HOME/MC/server.log\n启动完成后可通过日志查看运行状态。" 12 60
+                                                    java -jar server.jar nogui >> "$HOME/MC/server.log" 2>&1
+                                            ;;
+                                            "退出")
+                                            exit
+                                            ;;
+                                            esac
+                                   fi
+                           else
+                                   echo -e "\033[92m检测未安装Java，正在安装，安装完成后将启动服务器\033[0m"
+                                   sudo apt update
+                                   sudo apt install openjdk-21-jdk -y
+                                   cd "$HOME/MC/"
+                                   whiptail --title "启动提示" --msgbox "服务器正在启动，启动日志将保存至：\n$HOME/MC/server.log\n启动完成后可通过日志查看运行状态。" 12 60
+                                   java -jar server.jar nogui >> "$HOME/MC/server.log" 2>&1
+                           fi
+                           ;;
+                        "退出")
+                            exit
+                            ;;
+                esac
+                            ;;
+                        "Paper核心")
+                        echo -e "\033[92m**请在6秒认真阅读以下文字**\033[0m"
+                        echo -e "\033[92mPaper核心需要完整开机并关机三次才可配置完成，此时方可进入服务器，以后会进一步优化！\033[0m"
+                        sleep 6
+                        HEIGHT=15
+                        WIDTH=40
+                        CHOICE_HEIGHT=4
+                        BACKTITLE="MC服务器管理（新）"
+                        TITLE="安装/启动"
+                        MENU="选择版本"
+ 
+                        OPTIONS=("JE1.21+BE1.21" "退出")
+ 
+                        CHOICE=$(whiptail --clear --backtitle "$BACKTITLE" --title "$TITLE" --menu "$MENU" $HEIGHT $WIDTH $CHOICE_HEIGHT "${OPTIONS[@]}" 2>&1 >/dev/tty)
+                        clear
+                        case $CHOICE in
+                        "JE1.21+BE1.21")
+                        if [ -e "$HOME/MC/start.txt" ];then
+                            sudo sed -i 's/eula=false/eula=true/g' "$HOME/MC/eula.txt"
+                            sudo sed -i 's/auth-type: online/auth-type: offline/g' "$HOME/MC/plugins/Geyser-Spigot/config.yml"
+                            sudo sed -i 's/online-mode=true/online-mode=false/g' "$HOME/MC/server.properties"
+                            if [ -e "$HOME/MC/plugins/Geyser-Spigot.jar" ];then
+                                     echo -e "\033[92m此文件已经准备好\033[0m"
+                            else
+                                     echo -e "\033[92m此文件未准备，正在准备\033[0m"
+                                     sudo mv Geyser-Spigot.jar "$HOME/MC/plugins/"
+                                     echo -e "\033[92m文件已经准备好\033[0m"
+                            fi
+                        else
+                            sudo mkdir -p "$HOME/MC"
+                            sudo touch "$HOME/MC/start.txt"
+                            echo -e "\033[92m正在开始下载服务端\033[0m"
+                            wget https://api.papermc.io/v2/projects/paper/versions/1.21/builds/124/downloads/paper-1.21-124.jar
+                            sudo mv paper-1.21-124.jar "$HOME/MC/server.jar"
+                            echo -e "\033[92m正在开始下载Geyser\033[0m"
+                            wget https://cdn.modrinth.com/data/wKkoqHrH/versions/F0l0xvLQ/Geyser-Spigot.jar
+                            echo -e "\033[92m即将启动服务器\033[0m"
+                        fi
+                        echo -e "\033[92m正在验证java是否安装\033[0m"
+                        java -version
+                        if [ $? -eq 0 ]; then
+                                echo -e "\033[92mJava已经安装\033[0m"
+                                java_version=$(java -version 2>&1 | sed '1!d' | sed -e 's/"//g' | awk '{print $3}')
+                                v=${java_version%%.*}
+                                if [[ $v == *"21"* ]]; then
+                                         cd "$HOME/MC/"
+                                         whiptail --title "启动提示" --msgbox "服务器正在启动，启动日志将保存至：\n$HOME/MC/server.log\n启动完成后可通过日志查看运行状态。" 12 60
+                                         java -jar server.jar nogui >> "$HOME/MC/server.log" 2>&1
+                                else
+                                        java_version=$(java -version 2>&1 | sed '1!d' | sed -e 's/"//g' | awk '{print $3}')
+                                        v=${java_version%%.*}
+                                        echo -e "\033[92mJava版本为$v\033[0m"
+                                        sleep 2.5
+                                        HEIGHT=15
+                                        WIDTH=40
+                                        CHOICE_HEIGHT=4
+                                        BACKTITLE="MC服务器管理（新）"
+                                        TITLE="请慎重确认"
+                                        MENU="确认Java版本"
+ 
+                                        OPTIONS=("Java版本为21及以上" "Java版本为21以下" "退出")
+ 
+                                        CHOICE=$(whiptail --clear --backtitle "$BACKTITLE" --title "$TITLE" --menu "$MENU" $HEIGHT $WIDTH $CHOICE_HEIGHT "${OPTIONS[@]}" 2>&1 >/dev/tty)
+                                        clear
+                                        case $CHOICE in
+                                        "Java版本为21及以上")
+                                                cd "$HOME/MC/"
+                                                whiptail --title "启动提示" --msgbox "服务器正在启动，启动日志将保存至：\n$HOME/MC/server.log\n启动完成后可通过日志查看运行状态。" 12 60
+                                                java -jar server.jar nogui >> "$HOME/MC/server.log" 2>&1
+                                        ;;
+                                        "Java版本为21以下")
+                                        sudo apt update
+                                                sudo apt install openjdk-21-jdk -y
+                                                cd "$HOME/MC/"
+                                                whiptail --title "启动提示" --msgbox "服务器正在启动，启动日志将保存至：\n$HOME/MC/server.log\n启动完成后可通过日志查看运行状态。" 12 60
+                                                java -jar server.jar nogui >> "$HOME/MC/server.log" 2>&1
+                                        ;;
+                                        "退出")
+                                        exit
+                                        ;;
+                                        esac
+                                fi
+                        else
+                                echo -e "\033[92m检测未安装Java，正在安装，安装完成后将启动服务器\033[0m"
+                                sudo apt update
+                                sudo apt install openjdk-21-jdk -y
+                                cd "$HOME/MC/"
+                                whiptail --title "启动提示" --msgbox "服务器正在启动，启动日志将保存至：\n$HOME/MC/server.log\n启动完成后可通过日志查看运行状态。" 12 60
+                                java -jar server.jar nogui >> "$HOME/MC/server.log" 2>&1
+                        fi
+                            ;;
+                      "退出")
+                           exit
+                            ;;
+                        esac
+                ;;
+                "Spigot核心")
+                echo -e "\033[92m**请在6秒认真阅读以下文字**\033[0m"
+                echo -e "\033[92mSpigot核心需要完整开机并关机三次才可配置完成，此时方可进入服务器，以后会进一步优化\033[0m"
+                sleep 6
+                HEIGHT=15
+                WIDTH=40
+                CHOICE_HEIGHT=4
+                BACKTITLE="MC服务器管理（新）"
+                TITLE="安装/启动"
+                MENU="选择版本"
+ 
+                OPTIONS=("JE1.21+BE1.21" "退出")
+ 
+                CHOICE=$(whiptail --clear --backtitle "$BACKTITLE" --title "$TITLE" --menu "$MENU" $HEIGHT $WIDTH $CHOICE_HEIGHT "${OPTIONS[@]}" 2>&1 >/dev/tty)
+                clear
+                case $CHOICE in
+                "JE1.21+BE1.21")
+                if [ -e "$HOME/MC/start.txt" ];then
+                    sudo sed -i 's/eula=false/eula=true/g' "$HOME/MC/eula.txt"
+                    sudo sed -i 's/auth-type: online/auth-type: offline/g' "$HOME/MC/plugins/Geyser-Spigot/config.yml"
+                    sudo sed -i 's/online-mode=true/online-mode=false/g' "$HOME/MC/server.properties"
+                    if [ -e "$HOME/MC/plugins/Geyser-Spigot.jar" ];then
+                             echo -e "\033[92m此文件已经准备好\033[0m"
+                    else
+                             echo -e "\033[92m此文件未准备，正在准备\033[0m"
+                             sudo mv Geyser-Spigot.jar "$HOME/MC/plugins/"
+                             echo -e "\033[92m文件已经准备好\033[0m"
+                    fi
+                else
+                    sudo mkdir -p "$HOME/MC"
+                    sudo touch "$HOME/MC/start.txt"
+                    echo -e "\033[92m正在开始下载服务端\033[0m"
+                    wget https://download.getbukkit.org/spigot/spigot-1.21.jar
+                    sudo mv spigot-1.21.jar "$HOME/MC/server.jar"
+                    echo -e "\033[92m正在开始下载Geyser\033[0m"
+                    wget https://cdn.modrinth.com/data/wKkoqHrH/versions/F0l0xvLQ/Geyser-Spigot.jar
+                    echo -e "\033[92m即将启动服务器\033[0m"
+                fi
+                echo -e "\033[92m正在验证java是否安装\033[0m"
+                java -version
+                if [ $? -eq 0 ]; then
+                        echo -e "\033[92mJava已经安装\033[0m"
+                        java_version=$(java -version 2>&1 | sed '1!d' | sed -e 's/"//g' | awk '{print $3}')
+                        v=${java_version%%.*}
+                        if [[ $v == *"21"* ]]; then
+                                 cd "$HOME/MC/"
+                                 whiptail --title "启动提示" --msgbox "服务器正在启动，启动日志将保存至：\n$HOME/MC/server.log\n启动完成后可通过日志查看运行状态。" 12 60
+                                 java -jar server.jar nogui >> "$HOME/MC/server.log" 2>&1
+                        else
+                                java_version=$(java -version 2>&1 | sed '1!d' | sed -e 's/"//g' | awk '{print $3}')
+                                v=${java_version%%.*}
+                                echo -e "\033[92mJava版本为$v\033[0m"
+                                sleep 2.5
+                                HEIGHT=15
+                                WIDTH=40
+                                CHOICE_HEIGHT=4
+                                BACKTITLE="MC服务器管理（新）"
+                                TITLE="请慎重确认"
+                                MENU="确认Java版本"
+ 
+                                OPTIONS=("Java版本为21.0.0及以上" "Java版本为21.0.0以下" "退出")
+ 
+                                CHOICE=$(whiptail --clear --backtitle "$BACKTITLE" --title "$TITLE" --menu "$MENU" $HEIGHT $WIDTH $CHOICE_HEIGHT "${OPTIONS[@]}" 2>&1 >/dev/tty)
+                                clear
+                                case $CHOICE in
+                                "Java版本为21.0.0及以上")
+                                        cd "$HOME/MC/"
+                                        whiptail --title "启动提示" --msgbox "服务器正在启动，启动日志将保存至：\n$HOME/MC/server.log\n启动完成后可通过日志查看运行状态。" 12 60
+                                        java -jar server.jar nogui >> "$HOME/MC/server.log" 2>&1
+                                ;;
+                                "Java版本为21.0.0以下")
+                                sudo apt update
+                                        sudo apt install openjdk-21-jdk -y
+                                        cd "$HOME/MC/"
+                                        whiptail --title "启动提示" --msgbox "服务器正在启动，启动日志将保存至：\n$HOME/MC/server.log\n启动完成后可通过日志查看运行状态。" 12 60
+                                        java -jar server.jar nogui >> "$HOME/MC/server.log" 2>&1
+                                ;;
+                                "退出")
+                                exit
+                                ;;
+                                esac
+                        fi
+                else
+                        echo -e "\033[92m检测未安装Java，正在安装，安装完成后将启动服务器\033[0m"
+                        sudo apt update
+                        sudo apt install openjdk-21-jdk -y
+                        cd "$HOME/MC/"
+                        whiptail --title "启动提示" --msgbox "服务器正在启动，启动日志将保存至：\n$HOME/MC/server.log\n启动完成后可通过日志查看运行状态。" 12 60
+                        java -jar server.jar nogui >> "$HOME/MC/server.log" 2>&1
+                fi
+                            ;;
+                "退出")
+                exit
+                   ;;
+                esac
+                ;;
+                "退出")
+                exit
+                ;;
+        esac
+                ;;
+        "卸载")
+            if whiptail --title "卸载确认（1/2）" --yesno "即将删除 $HOME/MC 目录及所有服务器数据，此操作不可恢复！\n是否继续？" 12 60; then
+                if whiptail --title "卸载确认（2/2）" --yesno "确认执行卸载？\n删除后服务器数据、配置文件将永久丢失！" 12 60; then
+                    sudo rm -rf "$HOME/MC"
+                    echo -e "\033[92m已经成功删除MC服务器目录\033[0m"
+                else
+                    echo -e "\033[93m已取消卸载操作，服务器数据保留\033[0m"
+                fi
+            else
+                echo -e "\033[93m已取消卸载操作，服务器数据保留\033[0m"
+            fi
+            ;;
+        "查看启动日志")
+            if [ -e "$HOME/MC/server.log" ]; then
+                echo -e "\033[92m正在打开服务器启动日志，按q键退出查看\033[0m"
+                sleep 2
+                sudo less "$HOME/MC/server.log"
+            else
+                whiptail --title "日志不存在" --msgbox "未找到服务器启动日志（$HOME/MC/server.log）\n可能服务器尚未启动过或日志文件已删除。" 12 60
+            fi
+            ;;
+        "清理启动日志")
+            if [ -e "$HOME/MC/server.log" ]; then
+                if whiptail --title "清理确认（1/2）" --yesno "即将清理服务器启动日志（$HOME/MC/server.log）\n清理前会自动备份为 server.log.bak，是否继续？" 12 60; then
+                    if whiptail --title "清理确认（2/2）" --yesno "确认执行日志清理？\n备份文件可在 $HOME/MC/ 目录找到，原日志将被清空。" 12 60; then
+                        sudo cp "$HOME/MC/server.log" "$HOME/MC/server.log.bak"
+                        if [ $? -eq 0 ]; then
+                            sudo > "$HOME/MC/server.log"
+                            echo -e "\033[92m日志清理完成！\n备份文件：$HOME/MC/server.log.bak\033[0m"
+                        else
+                            whiptail --title "备份失败" --msgbox "日志备份时出现错误，无法执行清理操作，请检查文件权限。" 12 60
+                        fi
+                    else
+                        echo -e "\033[93m已取消日志清理操作，原日志保留\033[0m"
+                    fi
+                else
+                    echo -e "\033[93m已取消日志清理操作，原日志保留\033[0m"
+                fi
+            else
+                whiptail --title "日志不存在" --msgbox "未找到服务器启动日志（$HOME/MC/server.log）\n无需清理，可能服务器尚未启动过或日志文件已删除。" 12 60
+            fi
+            ;;
+        "退出")
+            exit
+            ;;
+    esac
+}
+
+install_MC_SERVER_MENU_NEW

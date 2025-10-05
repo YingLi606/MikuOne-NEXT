@@ -1,5 +1,5 @@
 {
-    "version": "1.2.3",
+    "version": "1.2.5",
     "git_clone": "YingLi606/MikuOne-NEXT",
-    "description": "修复已知问题"
+    "description": "Linux版本新增 MC服务器管理（新）"
 }

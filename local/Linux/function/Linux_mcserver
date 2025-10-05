@@ -317,8 +317,8 @@ Export_zip_MC_SERVER() {
 	fi
 
 }
-install_MC_SERVER_MENU() {
-	install_MC_SERVER_MENU=$(
+install_MC_SERVER_MENU_OLD() {
+	install_MC_SERVER_MENU_OLD=$(
 		whiptail --title "服务器核心种类选择" --menu "按自己需求来" 15 60 7 \
 			"1" "纯净服务端——插件" \
 			"2" "mod服务端" \
@@ -326,7 +326,7 @@ install_MC_SERVER_MENU() {
 			'4' '原版服务端' \
 			"0" "退出" 3>&1 1>&2 2>&3
 	)
-	case $install_MC_SERVER_MENU in
+	case $install_MC_SERVER_MENU_OLD in
 	0)
 		return
 		;;
