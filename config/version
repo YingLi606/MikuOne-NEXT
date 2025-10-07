@@ -1,5 +1,5 @@
 {
-    "version": "1.2.7",
+    "version": "2.0.0",
     "git_clone": "YingLi606/MikuOne-NEXT",
-    "description": "Linux版本新增 MC服务器管理（新）"
+    "description": "Linux版本新增 MC服务器管理（新）,该功能在测试，不代表最终品质"
 }
