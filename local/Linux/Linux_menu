@@ -1,8 +1,3 @@
-# if source $HOME/MikuOne-NEXT/local/Linux/Linux_function; then
-# 	echo -e "${SUSSEC}加载Linux功能成功"
-# else
-# 	echo -e "${WORRY}加载Linux功能失败"
-# fi
 for script in $HOME/MikuOne-NEXT/local/Linux/function/*; do
 	source "$script"
 	log "加载:$script"
@@ -47,7 +42,7 @@ startNapCatQQB | startnQQB)
 	fi
 
 	Linux_menu=$(
-		whiptail --title "MikuOne-NEXT V2.0.8" --menu "请选择功能" 15 60 4 \
+		whiptail --title "MikuOne-NEXT V2.0.9" --menu "请选择功能" 15 60 4 \
 			"1" "🌤 管理mc Server（旧）" \
 		    "2" "🍭 MC服务器管理（新）" \
 			"3" "🤖 QQ机器人" \

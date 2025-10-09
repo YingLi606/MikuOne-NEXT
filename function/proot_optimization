@@ -80,14 +80,17 @@ hcjx() {
     read -r
 }
 
-echo -e "${INFO}正在优化系统，请勿退出！"
-echo "127.0.0.1 localhost" >/etc/hosts
-mkdir -p /run/systemd/resolve
 echo -e "${GREEN}正在配置DNS${RES}"
-echo -e "nameserver 8.8.8.8
-nameserver 8.8.8.8" >/run/systemd/resolve/stub-resolv.conf
-echo -e "nameserver 8.8.8.8
-nameserver 8.8.8.8" >/etc/resolv.conf
+echo -e "nameserver 114.114.114.114
+nameserver 114.114.115.115
+nameserver 1.2.4.8
+nameserver 240c::6666
+nameserver 240c::6644" >/run/systemd/resolve/stub-resolv.conf
+echo -e "nameserver 114.114.114.114
+nameserver 114.114.115.115
+nameserver 1.2.4.8
+nameserver 240c::6666
+nameserver 240c::6644" >/etc/resolv.conf
 echo -e "${GREEN}尝试禁用无用检测${RES}"
 ln -s ~/MikuOne-NEXT/mikunext.sh /usr/bin/mikunext
 chmod 777 /usr/bin/mikunext
