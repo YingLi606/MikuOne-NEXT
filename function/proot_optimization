@@ -80,6 +80,10 @@ hcjx() {
     read -r
 }
 
+echo -e "${INFO}优化系统请勿退出"
+echo "127.0.0.1 localhost" >/etc/hosts
+mkdir -p /run/systemd/resolve
+
 echo -e "${GREEN}正在配置DNS${RES}"
 echo -e "nameserver 114.114.114.114
 nameserver 114.114.115.115
