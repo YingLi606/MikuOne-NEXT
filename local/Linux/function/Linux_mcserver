@@ -222,12 +222,14 @@ rm_MC_SERVER() {
 		correct_sum=$(($num1 + $num2))
 		# 检查用户输入是否正确
 		if [ $user_sum -eq $correct_sum ]; then
-			echo -e "删除开始正确！你输入的和是正确的。"
+			echo -e "✅ 验证完成，您已证明你是人类，继续操作"
+			sleep 2
 			rm -rfv "${HOME}/.termux/MikuOne-NEXT/MCserver/${rm_MC_SERVER_class}/${list_items[$((user_choice - 1))]}"
 			# 在这里添加你想要执行的命令
 			log "删除完成"
 		else
-			echo -e "错误！你输入的和不正确。删除程序将不执行。"
+			echo -e "❌ 错误！你输入的答案不正确。删除程序将不执行。"
+			sleep 2
 			log "取消失败"
 		fi
 		;;

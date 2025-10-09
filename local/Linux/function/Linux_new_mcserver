@@ -49,83 +49,117 @@ check_java() {
 
 install_core() {
     local CORE_JAR="" INSTALL_DIR="" CORE_TYPE="" VERSION=""
-    # 1. 选择服务端类型
     CORE=$(whiptail --title "选服务端类型" --menu "请选择要安装的服务端" 15 50 4 \
         "1" "Paper" "2" "Spigot" "3" "Nukkit" "4" "Fabric" \
         3>&1 1>&2 2>&3)
     [ -z "$CORE" ] && return
 
-    # 2. 服务端版本选择与下载（保留原逻辑，确保CORE_JAR赋值正确）
     case $CORE in
         1)
             CORE_TYPE="Paper"
-            VER=$(whiptail --title "选Paper版本" --menu "选择1.21开头版本" 12 40 2 \
-                "1" "1.21.9" "2" "1.21.8" \
+            VER=$(whiptail --title "选Paper版本" --menu "选择版本" 12 40 2 \
+                "1" "1.21.10" "2" "1.21.8" \
                 3>&1 1>&2 2>&3)
             [ -z "$VER" ] && return
-            VERSION=$([ $VER -eq 1 ] && echo "1.21.9" || echo "1.21.8")
+            VERSION=$([ $VER -eq 1 ] && echo "1.21.10" || echo "1.21.8")
             INSTALL_DIR="$BASE_DIR/$CORE_TYPE/$VERSION"  
-            CORE_JAR="paper.jar"  # 服务端启动器JAR文件名
+            CORE_JAR="paper.jar"
             mkdir -p "$INSTALL_DIR/plugins" && cd "$INSTALL_DIR"
             echo -e "${BLUE}[下载] 开始下载Paper $VERSION 核心...${RESET}"
-            wget --show-progress "https://meta.fabricmc.net/v2/versions/loader/1.21.9/0.17.2/1.1.0/server/jar" -O "$CORE_JAR"
+            if [ "$VERSION" = "1.21.10" ]; then
+                wget --show-progress "https://fill-data.papermc.io/v1/objects/23f6560d17e285149c0e486579e3fcc8208dcc171a59c4d021057a9063534732/paper-1.21.10-64.jar" -O "$CORE_JAR"
+            else
+                wget --show-progress "https://fill-data.papermc.io/v1/objects/8de7c52c3b02403503d16fac58003f1efef7dd7a0256786843927fa92ee57f1e/paper-1.21.8-60.jar" -O "$CORE_JAR"
+            fi
             ;;
         2)
             CORE_TYPE="Spigot"
+            VER=$(whiptail --title "选Spigot版本" --menu "选择版本" 10 40 1 \
+                "1" "1.21.8" \
+                3>&1 1>&2 2>&3)
+            [ -z "$VER" ] && return
             VERSION="1.21.8"
             INSTALL_DIR="$BASE_DIR/$CORE_TYPE/$VERSION"  
-            CORE_JAR="spigot.jar"  # 服务端启动器JAR文件名
+            CORE_JAR="spigot.jar"
             mkdir -p "$INSTALL_DIR/plugins" && cd "$INSTALL_DIR"
             echo -e "${BLUE}[下载] 开始下载Spigot $VERSION 核心...${RESET}"
             wget --show-progress "https://cdn.getbukkit.org/spigot/spigot-1.21.8.jar" -O "$CORE_JAR"
             ;;
         3)
             CORE_TYPE="Nukkit"
+            VER=$(whiptail --title "选Nukkit版本" --menu "选择版本" 10 40 1 \
+                "1" "build1120" \
+                3>&1 1>&2 2>&3)
+            [ -z "$VER" ] && return
             VERSION="build1120"
             INSTALL_DIR="$BASE_DIR/$CORE_TYPE/$VERSION"  
-            CORE_JAR="nukkit.jar"  # 服务端启动器JAR文件名
+            CORE_JAR="nukkit.jar"
             mkdir -p "$INSTALL_DIR/plugins" && cd "$INSTALL_DIR"
             echo -e "${BLUE}[下载] 开始下载Nukkit $VERSION 核心...${RESET}"
             wget --show-progress "https://download.fastmirror.net/download/NukkitX/general/build1120" -O "$CORE_JAR"
             ;;
         4)
             CORE_TYPE="Fabric"
-            VER=$(whiptail --title "选Fabric版本" --menu "选择1.21开头版本" 12 40 2 \
-                "1" "1.21.9" "2" "1.21.8" \
+            VER=$(whiptail --title "选Fabric版本" --menu "选择1.21开头版本（已移除1.21.8）" 12 40 2 \
+                "1" "1.21.10" "2" "1.21.9" \
                 3>&1 1>&2 2>&3)
             [ -z "$VER" ] && return
-            VERSION=$([ $VER -eq 1 ] && echo "1.21.9" || echo "1.21.8")
+            VERSION=$([ $VER -eq 1 ] && echo "1.21.10" || echo "1.21.9")
             INSTALL_DIR="$BASE_DIR/$CORE_TYPE/$VERSION"  
-            CORE_JAR="fabric.jar"  # 服务端启动器JAR文件名
+            CORE_JAR="fabric.jar"
             mkdir -p "$INSTALL_DIR/plugins" && cd "$INSTALL_DIR"
             echo -e "${BLUE}[下载] 开始下载Fabric $VERSION 核心...${RESET}"
-            wget --show-progress "https://meta.fabricmc.net/v2/versions/loader/$VERSION/0.17.2/1.1.0/server/jar" -O "$CORE_JAR"
+            if [ "$VERSION" = "1.21.10" ]; then
+                wget --show-progress "https://meta.fabricmc.net/v2/versions/loader/1.21.10/0.17.2/1.1.0/server/jar" -O "$CORE_JAR"
+            else
+                wget --show-progress "https://meta.fabricmc.net/v2/versions/loader/1.21.9/0.17.2/1.1.0/server/jar" -O "$CORE_JAR"
+            fi
             echo -e "${BLUE}[下载] 开始下载Fabric API $VERSION...${RESET}"
-            [ $VER -eq 1 ] && wget --show-progress "https://cdn.modrinth.com/data/P7dR8mSH/versions/iHrvVvaM/fabric-api-0.134.0%2B1.21.9.jar" -O plugins/fabric-api.jar || wget --show-progress "https://cdn.modrinth.com/data/P7dR8mSH/versions/7X7rQ0X7/fabric-api-0.133.1%2B1.21.8.jar" -O plugins/fabric-api.jar
+            if [ "$VERSION" = "1.21.10" ]; then
+                wget --show-progress "https://cdn.modrinth.com/data/P7dR8mSH/versions/qNm2IWMn/fabric-api-0.135.0%2B1.21.10.jar" -O plugins/fabric-api.jar
+            else
+                wget --show-progress "https://cdn.modrinth.com/data/P7dR8mSH/versions/iHrvVvaM/fabric-api-0.134.0%2B1.21.9.jar" -O plugins/fabric-api.jar
+            fi
             ;;
     esac
+    echo -e "${GREEN}[完成] $CORE_TYPE-$VERSION 服务端核心下载完成，路径：$INSTALL_DIR${RESET}"
 
-    # 3. 自定义Java内存参数（保留原输入逻辑）
-    MEM_SIZE=$(whiptail --title "自定义内存参数" --inputbox "请输入服务器内存大小（格式：1G/2G/4G，默认2G）" 10 50 "2G" 3>&1 1>&2 2>&3)
-    [[ ! "$MEM_SIZE" =~ [Gg]$ ]] && MEM_SIZE="${MEM_SIZE}G"
-    echo -e "${YELLOW}[提示] 已设置服务器内存参数：-Xmx$MEM_SIZE${RESET}"
+    echo -e "${BLUE}[配置] 第一步：配置Java可执行文件路径...${RESET}"
+    local java_paths=$(ls /usr/lib/jvm/*/bin/java 2>/dev/null)
+    if [ -z "$java_paths" ]; then
+        echo -e "${YELLOW}[提示] 未检测到系统默认Java路径，请手动输入完整路径${RESET}"
+        java_paths="无默认Java路径"
+    fi
+    read -e -p "请输入Java可执行文件路径（已安装路径参考：
+$java_paths
+）:" wherejava
+    if [ ! -x "$wherejava" ]; then
+        echo -e "${YELLOW}[警告] 输入路径无效，自动切换为系统默认Java命令${RESET}"
+        wherejava="java"
+    fi
 
-    # 4. 核心修改：生成start.sh，按要求写入java命令（仅-Xmx参数+服务端JAR文件名）
+    echo -e "${BLUE}[配置] 第二步：配置服务器内存参数...${RESET}"
+    MEM_MIN=$(whiptail --title "配置最小内存(-Xms)" --inputbox "请输入最小内存（格式：1G/2G，默认2G）" 10 50 "1G" 3>&1 1>&2 2>&3)
+    [[ ! "$MEM_MIN" =~ [Gg]$ ]] && MEM_MIN="${MEM_MIN}G"
+    MEM_MAX=$(whiptail --title "配置最大内存(-Xmx)" --inputbox "请输入最大内存（格式：2G/4G，默认2G）" 10 50 "2G" 3>&1 1>&2 2>&3)
+    [[ ! "$MEM_MAX" =~ [Gg]$ ]] && MEM_MAX="${MEM_MAX}G"
+    echo -e "${YELLOW}[提示] 已设置内存参数：-Xms$MEM_MIN -Xmx$MEM_MAX${RESET}"
+
+    local full_jar_path="$INSTALL_DIR/$CORE_JAR"
+    local full_eula_path="$INSTALL_DIR/eula.txt"
     cat > "$INSTALL_DIR/start.sh" << EOF
 #!/bin/bash
 cd "$INSTALL_DIR"
-echo "eula=true" > "$INSTALL_DIR/eula.txt"
-# 按要求保留：仅-Xmx内存参数 + 服务端启动器JAR文件名 + nogui
-java -Xmx$MEM_SIZE -jar $CORE_JAR nogui
+echo -e "eula=true" > "$full_eula_path"
+$wherejava -Xms$MEM_MIN -Xmx$MEM_MAX -jar "$full_jar_path" nogui
 EOF
     chmod +x "$INSTALL_DIR/start.sh"
-    echo -e "${GREEN}[成功] 启动脚本创建完成，路径：$INSTALL_DIR/start.sh${RESET}"
-    echo -e "${GREEN}[脚本内容] java命令已保存：java -Xmx$MEM_SIZE -jar $CORE_JAR nogui${RESET}"
+    echo -e "${GREEN}[成功] 启动脚本生成完成，路径：$INSTALL_DIR/start.sh${RESET}"
+    echo -e "${GREEN}[脚本验证] 已包含：cd服务端目录 → 生成eula.txt → 完整启动命令${RESET}"
 
-    # 5. 自动启动（保留原逻辑）
-    echo -e "${BLUE}[启动] $CORE_TYPE-$VERSION 正在启动（内存：$MEM_SIZE）...${RESET}"
+    echo -e "${BLUE}[启动] $CORE_TYPE-$VERSION 服务端启动中（内存：$MEM_MIN/$MEM_MAX）...${RESET}"
     bash "$INSTALL_DIR/start.sh"
-    [ $? -ne 0 ] && echo -e "${RED}[错误] 启动失败，可手动执行 $INSTALL_DIR/start.sh 排查${RESET}" && sleep 3
+    [ $? -ne 0 ] && echo -e "${RED}[错误] 启动失败，可手动执行 $INSTALL_DIR/start.sh 查看日志排查${RESET}" && sleep 3
 }
 
 plugin_store() {
@@ -154,7 +188,7 @@ plugin_store() {
         fi
     done
     [ ${#VER_LIST[@]} -eq 0 ] && {
-        echo -e "${RED}[错误] ${SELECTED_CORE} 下无带plugins文件夹的1.21版本！${RESET}"
+        echo -e "${RED}[错误] ${SELECTED_CORE} 下无带plugins文件夹的1.21.x版本！${RESET}"
         sleep 3 && return
     }
 
@@ -177,7 +211,7 @@ INSTALL_MC_SERVER_NEW() {
     check_system
     check_java
     while true; do
-        MAIN_MENU=$(whiptail --title "MC服务器管理（新）" --menu "功能测试中，不代表最终品质" 15 50 3 \
+        MAIN_MENU=$(whiptail --title "MC服务器管理（新）" --menu "管理服务器请从旧版操作，谢谢" 15 50 3 \
             "1" "📦 安装服务器核心" "2" "📥 插件商店" "3" "🌚 退出" \
             3>&1 1>&2 2>&3)
         case $MAIN_MENU in

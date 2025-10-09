@@ -77,7 +77,7 @@ validity_git() {
 	source ${HOME}/MikuOne-NEXT/config/config.sh
 	if [ "${git}" = "" ]; then
 		wheregit=$(
-			whiptail --title "选择默认安装源" --menu "以后的每次安装会优先考虑默认安装源" 15 60 4 \
+			whiptail --title "选择默认更新源" --menu "以后的每次安装会优先考虑默认更新源" 15 60 4 \
 				"1" "Github" \
 				"2" "Github加速代理" \
 				"0" "退出" 3>&1 1>&2 2>&3
@@ -106,7 +106,7 @@ validity_auto_upgrade() {
 	source ${HOME}/MikuOne-NEXT/config/config.sh
 	if [ "${auto_upgrade}" = "" ]; then
 		wheregit=$(
-			whiptail --title "选择默认安装源" --menu "是否自动更新软件包(默认关闭)" 15 60 4 \
+			whiptail --title "选择默认安装源" --menu "是否自动更新软件包(默认关闭,但建议开启)" 15 60 4 \
 				"1" "开启" \
 				"2" "关闭" \
 				"0" "退出" 3>&1 1>&2 2>&3
