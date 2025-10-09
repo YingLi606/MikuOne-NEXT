@@ -1,5 +1,5 @@
 {
-    "version": "2.0.5",
+    "version": "2.0.6",
     "git_clone": "YingLi606/MikuOne-NEXT",
-    "description": "新版mc管理服务器新增了Paper 1.21.10,Fabric 1.21.10"
+    "description": "新版mc管理服务器修复了重复显示名称问题"
 }

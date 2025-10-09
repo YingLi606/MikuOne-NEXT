@@ -100,7 +100,7 @@ install_core() {
             ;;
         4)
             CORE_TYPE="Fabric"
-            VER=$(whiptail --title "选Fabric版本" --menu "选择1.21开头版本（已移除1.21.8）" 12 40 2 \
+            VER=$(whiptail --title "选Fabric版本" --menu "选择版本" 12 40 2 \
                 "1" "1.21.10" "2" "1.21.9" \
                 3>&1 1>&2 2>&3)
             [ -z "$VER" ] && return
@@ -110,9 +110,9 @@ install_core() {
             mkdir -p "$INSTALL_DIR/plugins" && cd "$INSTALL_DIR"
             echo -e "${BLUE}[下载] 开始下载Fabric $VERSION 核心...${RESET}"
             if [ "$VERSION" = "1.21.10" ]; then
-                wget --show-progress "https://meta.fabricmc.net/v2/versions/loader/1.21.10/0.17.2/1.1.0/server/jar" -O "$CORE_JAR"
+                sudo curl -OJ "https://meta.fabricmc.net/v2/versions/loader/1.21.10/0.17.2/1.1.0/server/jar" -o "$CORE_JAR"
             else
-                wget --show-progress "https://meta.fabricmc.net/v2/versions/loader/1.21.9/0.17.2/1.1.0/server/jar" -O "$CORE_JAR"
+                sudo curl -OJ "https://meta.fabricmc.net/v2/versions/loader/1.21.9/0.17.2/1.1.0/server/jar" -o "$CORE_JAR"
             fi
             echo -e "${BLUE}[下载] 开始下载Fabric API $VERSION...${RESET}"
             if [ "$VERSION" = "1.21.10" ]; then
@@ -166,7 +166,7 @@ plugin_store() {
     local CORE_TYPE_LIST=()
     local TARGET_CORES=("Paper" "Spigot" "Fabric")
     for CORE in "${TARGET_CORES[@]}"; do
-        [ -d "$BASE_DIR/$CORE" ] && CORE_TYPE_LIST+=("$CORE" "$CORE")
+        [ -d "$BASE_DIR/$CORE" ] && CORE_TYPE_LIST+=("$CORE" "${CORE} 服务端")
     done
     [ ${#CORE_TYPE_LIST[@]} -eq 0 ] && {
         echo -e "${RED}[错误] $BASE_DIR 下无已安装的Paper/Spigot/Fabric服务端！${RESET}"
@@ -192,7 +192,7 @@ plugin_store() {
         sleep 3 && return
     }
 
-    SELECTED_VER_DIR=$(whiptail --title "选择版本" --menu "${SELECTED_CORE} 可下载插件的版本" 20 60 10 "${VER_LIST[@]}" 3>&1 1>&2 2>&3)
+    SELECTED_VER_DIR=$(whiptail --title "选择路径" --menu "${SELECTED_CORE} 可下载插件的版本" 20 60 10 "${VER_LIST[@]}" 3>&1 1>&2 2>&3)
     [ -z "$SELECTED_VER_DIR" ] && return
     local PLUGIN_DIR="$SELECTED_VER_DIR/plugins"
 
