@@ -37,6 +37,7 @@ check_java() {
     echo -e "${BLUE}[检测] 检查Java 21...${RESET}"
     if command -v java &> /dev/null && java -version 2>&1 | grep -q "21"; then
         echo -e "${GREEN}[成功] Java 21已安装${RESET}"
+        sleep 2 && clear
     else
         echo -e "${YELLOW}[提示] 正在安装Java 21...${RESET}"
         apt update &> /dev/null && apt install openjdk-21-jre -y &> /dev/null
