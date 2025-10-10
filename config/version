@@ -1,5 +1,5 @@
 {
-    "version": "2.1.5",
+    "version": "2.1.6",
     "git_clone": "YingLi606/MikuOne-NEXT",
-    "description": "优化了相关功能"
+    "description": "新增了安装Proot时更换软件源"
 }
