@@ -80,7 +80,7 @@ hcjx() {
     read -r
 }
 
-echo -e "${INFO}优化系统请勿退出"
+echo -e "${INFO}正在优化系统，请勿退出！"
 echo "127.0.0.1 localhost" >/etc/hosts
 mkdir -p /run/systemd/resolve
 

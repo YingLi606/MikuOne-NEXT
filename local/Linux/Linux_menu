@@ -42,7 +42,7 @@ startNapCatQQB | startnQQB)
 	fi
 
 	Linux_menu=$(
-		whiptail --title "MikuOne-NEXT V2.1.0" --menu "请选择功能" 15 60 4 \
+		whiptail --title "MikuOne-NEXT V2.1.5" --menu "请选择功能" 15 60 4 \
 			"1" "🌤 管理mc Server（旧）" \
 		    "2" "🍭 MC服务器管理（新）" \
 			"3" "🤖 QQ机器人" \
@@ -116,24 +116,23 @@ startNapCatQQB | startnQQB)
 		;;
 
 	2)
-		MC_NEW_menu=$(
-			whiptail --title "即将进入新版" --menu "请检查是否支持Java 21" 15 60 8 \
-				"1" "确认" \
+		MCServernew_menu=$(
+			whiptail --title "即将切换" --menu "请确保已安装Java 21" 15 60 8 \
+				"1" "下一步" \
 				"0" "退出" 3>&1 1>&2 2>&3
 		)
-		case $MC_NEW_menu in
+		case $MCServernew_menu in
 		1)
-			log "确认"
-			MC_again_menu=$(
-				whiptail --title "再来一次" --menu "若显示不支持系统会自动退出" 15 60 8 \
-					"1" "确认知晓" \
+			log "下一步"
+			MCServeragin_menu=$(
+				whiptail --title "再来一次" --menu "请确保你的系统是Debian,Ubuntu,Kali,GXDE,Deepin,UOS" 15 60 8 \
+					"1" "理解确认" \
 					"0" "退出" 3>&1 1>&2 2>&3
 			)
-			case $MC_again_menu in
+			case $MCServeragin_menu in
 			1)
-				log "确认知晓"
-				clear
-				echo "正在尝试切换"
+				log "理解确认"
+				echo -e "${INFO}正在尝试切换，请稍等"
 				sleep 3
 				clear
 				INSTALL_MC_SERVER_NEW
@@ -204,3 +203,4 @@ startNapCatQQB | startnQQB)
 	esac
 	;;
 esac
+

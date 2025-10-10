@@ -37,7 +37,7 @@ start)
 	;;
 *)
 	Android_menu=$(
-		whiptail --title "MikuOne-NEXT V2.1.0" --menu "请选择功能" 15 60 8 \
+		whiptail --title "MikuOne-NEXT V2.1.5" --menu "请选择功能" 15 60 8 \
 			"1" "🍀 管理proot容器" \
 			"2" "🤓 垃圾清理" \
 			"3" "🐸 Android软件商店（尝鲜）" \

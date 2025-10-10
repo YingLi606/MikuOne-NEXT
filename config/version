@@ -1,5 +1,5 @@
 {
-    "version": "2.1.0",
+    "version": "2.1.5",
     "git_clone": "YingLi606/MikuOne-NEXT",
-    "description": "新版mc管理服务器修复了重复显示名称问题"
+    "description": "优化了相关功能"
 }
