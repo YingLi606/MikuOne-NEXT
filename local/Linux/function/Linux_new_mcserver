@@ -1,5 +1,62 @@
+#!/bin/bash
+RED='\e[1;31m'
+GREEN='\e[1;32m'
+YELLOW='\e[1;33m'
+BLUE='\e[1;34m'
+PINK='\e[1;35m'
+RES='\e[0m'  # 统一颜色重置变量为RES，避免混用RESET
+
+ERROR="[${RED}错误${RES}]:"
+WORRY="[${YELLOW}警告${RES}]:"
+SUSSEC="[${GREEN}成功${RES}]:"
+INFO="[${BLUE}信息${RES}]:"
+
+BASE_DIR="$HOME/.termux/MikuOne-NEXT/MCserver"  
+
+check_commands() {
+    echo -e "${INFO} 正在检查必要命令....${RES}"
+    local cmds=("whiptail" "wget" "java" "find" "chmod" "rm")
+    for cmd in "${cmds[@]}"; do
+        if ! command -v "$cmd" &> /dev/null; then
+            echo -e "${ERROR} 缺少命令 $cmd，请安装后重试！${RES}"
+            sleep 3 && clear && exit 1
+        fi
+    done
+    [ ! -d "$BASE_DIR" ] && { mkdir -p "$BASE_DIR"; chmod 755 "$BASE_DIR"; }
+}
+
+check_system() {
+    check_commands
+    if ! command -v lsb_release &> /dev/null; then
+        echo -e "${ERROR} 无lsb_release，无法识别系统！${RES}"
+        sleep 5 && clear && exit 1
+    fi
+    OS=$(lsb_release -is)
+    SUPPORTED=("Ubuntu" "Kali" "Debian" "GXDE" "Deepin" "UOS")
+    [[ ! " ${SUPPORTED[@]} " =~ " ${OS} " ]] && {
+        echo -e "${ERROR} 系统${OS}未适配，仅支持${SUPPORTED[*]}！${RES}"
+        sleep 5 && clear && exit 1
+    }
+    echo -e "${SUSSEC} 适配系统：${OS}${RES}"
+}
+
+check_java() {
+    echo -e "${INFO} 检查Java 21...${RES}"
+    if command -v java &> /dev/null && java -version 2>&1 | grep -q "21"; then
+        echo -e "${GREEN}[成功] Java 21已安装${RES}"
+        sleep 2 && clear
+    else
+        echo -e "${WORRY} 检测到您安装的可能不是Java 21,正在安装Java 21...${RES}"
+        apt update &> /dev/null && apt install openjdk-21-jre -y &> /dev/null
+        if ! java -version 2>&1 | grep -q "21"; then
+            echo -e "${ERROR} Java 21安装失败！请检查你的网络环境或依赖，如果有同样错误，请及时联系开发者！${RES}"
+            sleep 5 && clear && exit 1
+        fi
+    fi
+}
+
 install_core() {
-    local CORE_JAR="" INSTALL_DIR="" CORE_TYPE="" VERSION="" MEM_PARAM="" MEM_MIN="" MEM_MAX=""
+    local CORE_JAR="" INSTALL_DIR="" CORE_TYPE="" VERSION="" MEM_MIN="" MEM_MAX=""
     CORE=$(whiptail --title "选服务端类型" --menu "请选择要安装的服务端" 15 50 4 \
         "1" "Paper" "2" "Spigot" "3" "Nukkit" "4" "Fabric" \
         3>&1 1>&2 2>&3)
@@ -17,7 +74,7 @@ install_core() {
             CORE_JAR="paper.jar"
             mkdir -p "$INSTALL_DIR/plugins" && cd "$INSTALL_DIR"
             clear
-            echo -e "${INFO} 开始下载Paper $VERSION 核心...${RESET}"
+            echo -e "${INFO} 开始下载Paper $VERSION 核心...${RES}"
             if [ "$VERSION" = "1.21.10" ]; then
                 wget --show-progress "https://fill-data.papermc.io/v1/objects/23f6560d17e285149c0e486579e3fcc8208dcc171a59c4d021057a9063534732/paper-1.21.10-64.jar" -O "$CORE_JAR"
             else
@@ -35,7 +92,7 @@ install_core() {
             CORE_JAR="spigot.jar"
             mkdir -p "$INSTALL_DIR/plugins" && cd "$INSTALL_DIR"
             clear
-            echo -e "${INFO} 开始下载Spigot $VERSION 核心...${RESET}"
+            echo -e "${INFO} 开始下载Spigot $VERSION 核心...${RES}"
             wget --show-progress "https://cdn.getbukkit.org/spigot/spigot-1.21.8.jar" -O "$CORE_JAR"
             ;;
         3)
@@ -48,7 +105,7 @@ install_core() {
             INSTALL_DIR="$BASE_DIR/$CORE_TYPE/$VERSION"  
             CORE_JAR="nukkit.jar"
             mkdir -p "$INSTALL_DIR/plugins" && cd "$INSTALL_DIR"
-            echo -e "${INFO} 开始下载Nukkit $VERSION 核心...${RESET}"
+            echo -e "${INFO} 开始下载Nukkit $VERSION 核心...${RES}"
             wget --show-progress "https://download.fastmirror.net/download/NukkitX/general/build1120" -O "$CORE_JAR"
             ;;
         4)
@@ -61,13 +118,13 @@ install_core() {
             INSTALL_DIR="$BASE_DIR/$CORE_TYPE/$VERSION"  
             CORE_JAR="fabric.jar"
             mkdir -p "$INSTALL_DIR/plugins" && cd "$INSTALL_DIR"
-            echo -e "${INFO} 开始下载Fabric $VERSION 核心...${RESET}"
+            echo -e "${INFO} 开始下载Fabric $VERSION 核心...${RES}"
             if [ "$VERSION" = "1.21.10" ]; then
                 sudo curl -OJ "https://meta.fabricmc.net/v2/versions/loader/1.21.10/0.17.3/1.1.0/server/jar" -o "$CORE_JAR"
             else
                 sudo curl -OJ "https://meta.fabricmc.net/v2/versions/loader/1.21.9/0.17.3/1.1.0/server/jar" -o "$CORE_JAR"
             fi
-            echo -e "${INFO} 开始下载Fabric API $VERSION...${RESET}"
+            echo -e "${INFO} 开始下载Fabric API $VERSION...${RES}"
             if [ "$VERSION" = "1.21.10" ]; then
                 wget --show-progress "https://cdn.modrinth.com/data/P7dR8mSH/versions/qNm2IWMn/fabric-api-0.135.0%2B1.21.10.jar" -O plugins/fabric-api.jar
             else
@@ -75,26 +132,26 @@ install_core() {
             fi
             ;;
     esac
-    echo -e "${SUSSEC} $CORE_TYPE-$VERSION 服务端核心下载完成，路径：$INSTALL_DIR${RESET}"
+    echo -e "${SUSSEC} $CORE_TYPE-$VERSION 服务端核心下载完成，路径：$INSTALL_DIR${RES}"
 
-    echo -e "${INFO} 第一步：配置Java可执行文件路径...${RESET}"
+    echo -e "${INFO} 第一步：配置Java可执行文件路径...${RES}"
     sleep 2
     local java_paths=$(ls /usr/lib/jvm/*/bin/java 2>/dev/null)
     if [ -z "$java_paths" ]; then
-        echo -e "${WORRY} 未检测到系统默认Java路径，请手动输入完整路径${RESET}"
+        echo -e "${WORRY} 未检测到系统默认Java路径，请手动输入完整路径${RES}"
         java_paths="无默认Java路径"
     fi
     read -e -p "请输入Java可执行文件路径（已安装路径参考：
 $java_paths
 ）:" wherejava
     if [ ! -x "$wherejava" ]; then
-        echo -e "${WORRY} 输入路径无效，自动切换为系统默认Java命令${RESET}"
+        echo -e "${WORRY} 输入路径无效，自动切换为系统默认Java命令${RES}"
         wherejava="java"
     fi
 
-    echo -e "${INFO} 第二步：配置服务器内存参数...${RESET}"
+    echo -e "${INFO} 第二步：配置服务器内存参数...${RES}"
     sleep 2
-    # 按服务端类型单独处理内存自定义，Fabric独立配置
+    # 核心需求：Fabric单独自定义内存（输入框标题带标识），其他服务端默认2G
     if [ "$CORE_TYPE" = "Fabric" ]; then
         MEM_MIN=$(whiptail --title "配置Fabric最小内存(-Xms)" --inputbox "请输入Fabric最小内存（格式：1G/2G，默认2G）" 10 50 "2G" 3>&1 1>&2 2>&3)
         [[ ! "$MEM_MIN" =~ [Gg]$ ]] && MEM_MIN="${MEM_MIN}G"
@@ -106,8 +163,7 @@ $java_paths
         MEM_MAX=$(whiptail --title "配置最大内存(-Xmx)" --inputbox "请输入最大内存（格式：2G/4G，默认2G）" 10 50 "2G" 3>&1 1>&2 2>&3)
         [[ ! "$MEM_MAX" =~ [Gg]$ ]] && MEM_MAX="${MEM_MAX}G"
     fi
-    MEM_PARAM="-Xms$MEM_MIN -Xmx$MEM_MAX"
-    echo -e "${WORRY} 已设置内存参数：$MEM_PARAM${RESET}"
+    echo -e "${WORRY} 已设置内存参数：-Xms$MEM_MIN -Xmx$MEM_MAX${RES}"
 
     local full_jar_path="$INSTALL_DIR/$CORE_JAR"
     local full_eula_path="$INSTALL_DIR/eula.txt"
@@ -115,12 +171,78 @@ $java_paths
 #!/bin/bash
 cd "$INSTALL_DIR"
 echo -e "eula=true" > "$full_eula_path"
-$wherejava $MEM_PARAM -jar "$full_jar_path" nogui
+$wherejava -Xms$MEM_MIN -Xmx$MEM_MAX -jar "$full_jar_path" nogui
 EOF
     chmod +x "$INSTALL_DIR/start.sh"
-    echo -e "${SUSSEC} 启动脚本生成完成${RESET}"
+    echo -e "${SUSSEC} 启动脚本生成完成${RES}"
 
-    echo -e "${INFO} $CORE_TYPE-$VERSION 服务端启动中（内存：$MEM_PARAM）...${RESET}"
+    echo -e "${INFO} $CORE_TYPE-$VERSION 服务端启动中（内存：$MEM_MIN/$MEM_MAX）...${RES}"
     bash "$INSTALL_DIR/start.sh"
-    [ $? -ne 0 ] && echo -e "${ERROR} 启动失败，可手动执行 $INSTALL_DIR/start.sh 查看日志排查${RESET}" && sleep 3
+    [ $? -ne 0 ] && echo -e "${ERROR} 启动失败，可手动执行 $INSTALL_DIR/start.sh 查看日志排查${RES}" && sleep 3
 }
+
+plugin_store() {
+    local CORE_TYPE_LIST=()
+    local TARGET_CORES=("Paper" "Spigot" "Fabric")
+    for CORE in "${TARGET_CORES[@]}"; do
+        [ -d "$BASE_DIR/$CORE" ] && CORE_TYPE_LIST+=("$CORE" "${CORE} 服务端")
+    done
+    [ ${#CORE_TYPE_LIST[@]} -eq 0 ] && {
+        echo -e "${ERROR} $BASE_DIR 下无已安装的Paper/Spigot/Fabric服务端！${RES}"
+        sleep 3 && clear && return
+    }
+
+    SELECTED_CORE=$(whiptail --title "选择服务端类型" --menu "已安装服务端类型" 15 50 3 "${CORE_TYPE_LIST[@]}" 3>&1 1>&2 2>&3)
+    [ -z "$SELECTED_CORE" ] && return
+
+    local VER_LIST=()
+    local CORE_PATH="$BASE_DIR/$SELECTED_CORE"
+    for VER_DIR in "$CORE_PATH"/1.21.*; do
+        [ -d "$VER_DIR" ] || continue
+        local VER_NAME=$(basename "$VER_DIR")
+        if [ -d "$VER_DIR/plugins" ]; then
+            VER_LIST+=("$VER_DIR" "${SELECTED_CORE}-${VER_NAME}")
+        else
+            echo -e "${WORRY} ${SELECTED_CORE}-${VER_NAME} 无plugins文件夹，不可下载插件${RES}"
+        fi
+    done
+    [ ${#VER_LIST[@]} -eq 0 ] && {
+        echo -e "${ERROR} ${SELECTED_CORE} 下无带plugins文件夹的1.21.x版本！${RES}"
+        sleep 3 && return
+    }
+
+    SELECTED_VER_DIR=$(whiptail --title "选择路径" --menu "${SELECTED_CORE} 可下载插件的版本" 20 60 10 "${VER_LIST[@]}" 3>&1 1>&2 2>&3)
+    [ -z "$SELECTED_VER_DIR" ] && return
+    local PLUGIN_DIR="$SELECTED_VER_DIR/plugins"
+
+    echo -e "${INFO} 开始下载 ${SELECTED_CORE} 版Geyser...${RES}"
+    if [ "$SELECTED_CORE" = "Fabric" ]; then
+        wget --show-progress "https://download.geysermc.org/v2/projects/geyser/versions/2.8.4/builds/947/downloads/fabric" -O "$PLUGIN_DIR/Geyser-Fabric.jar"
+    else
+        wget --show-progress "https://download.geysermc.org/v2/projects/geyser/versions/latest/builds/latest/downloads/spigot" -O "$PLUGIN_DIR/Geyser-Spigot.jar"
+    fi
+
+    [ $? -eq 0 ] && echo -e "${SUSSEC} Geyser插件已下载至：$PLUGIN_DIR${RES}" || echo -e "${ERROR} Geyser插件下载失败，请检查网络后重试！${RES}"
+    sleep 3
+}
+
+INSTALL_MC_SERVER_NEW() {
+    check_system
+    check_java
+    while true; do
+        MAIN_MENU=$(whiptail --title "MC服务器管理（新）" --menu "管理服务器请从旧版操作，谢谢" 15 50 3 \
+            "1" "📦 安装服务器核心" "2" "📥 插件商店" "3" "🌚 退出" \
+            3>&1 1>&2 2>&3)
+        case $MAIN_MENU in
+            1) install_core ;;
+            2) plugin_store ;;
+            3)
+                echo -e "${INFO} 3秒后退出...${RES}"
+                sleep 3 && clear && exit 0
+                ;;
+            *) clear && exit 0 ;;
+        esac
+    done
+}
+
+[[ "${BASH_SOURCE[0]}" == "$0" ]] && INSTALL_MC_SERVER_NEW
